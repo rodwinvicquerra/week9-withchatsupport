@@ -3,9 +3,17 @@ import { sql } from '@vercel/postgres';
 // Database connection utility for Vercel Neon
 export { sql };
 
+// Check if database connection is available
+export const isDatabaseConnected = () => {
+  return !!process.env.POSTGRES_URL;
+};
+
 // Simple user table creation (run this once in your database)
 export const createTables = async () => {
   try {
+    if (!isDatabaseConnected()) {
+      throw new Error('Database connection string (POSTGRES_URL) is not configured. Please set it in your environment variables.');
+    }
     await sql`
       CREATE TABLE IF NOT EXISTS users (
         id SERIAL PRIMARY KEY,
@@ -20,12 +28,16 @@ export const createTables = async () => {
     console.log('Tables created successfully');
   } catch (error) {
     console.error('Error creating tables:', error);
+    throw error;
   }
 };
 
 // User operations
 export const createUser = async (email: string, password: string, name?: string) => {
   try {
+    if (!isDatabaseConnected()) {
+      throw new Error('Database connection string (POSTGRES_URL) is not configured. Please set it in your environment variables.');
+    }
     const result = await sql`
       INSERT INTO users (email, password, name)
       VALUES (${email}, ${password}, ${name})
@@ -40,6 +52,9 @@ export const createUser = async (email: string, password: string, name?: string)
 
 export const getUserByEmail = async (email: string) => {
   try {
+    if (!isDatabaseConnected()) {
+      throw new Error('Database connection string (POSTGRES_URL) is not configured. Please set it in your environment variables.');
+    }
     const result = await sql`
       SELECT id, email, name, is_admin, created_at, updated_at
       FROM users
@@ -54,6 +69,9 @@ export const getUserByEmail = async (email: string) => {
 
 export const getAllUsers = async () => {
   try {
+    if (!isDatabaseConnected()) {
+      throw new Error('Database connection string (POSTGRES_URL) is not configured. Please set it in your environment variables.');
+    }
     const result = await sql`
       SELECT id, email, name, is_admin, created_at
       FROM users
