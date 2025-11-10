@@ -28,7 +28,16 @@ export function Navigation() {
 
   const scrollToSection = (href: string) => {
     const element = document.querySelector(href)
-    element?.scrollIntoView({ behavior: "smooth" })
+    if (element) {
+      const offset = 80 // Offset for fixed navigation
+      const elementPosition = element.getBoundingClientRect().top
+      const offsetPosition = elementPosition + window.pageYOffset - offset
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: "smooth"
+      })
+    }
     setIsMobileMenuOpen(false)
   }
 

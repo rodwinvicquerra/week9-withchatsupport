@@ -2,37 +2,38 @@
 
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
+import { useAuth, useUser } from "@clerk/nextjs"
 import { AdminDashboard } from "@/components/admin-dashboard"
 
 export default function AdminPage() {
   const router = useRouter()
+  const { isSignedIn, isLoaded: authLoaded } = useAuth()
+  const { user, isLoaded: userLoaded } = useUser()
   const [loading, setLoading] = useState(true)
-  const [authenticated, setAuthenticated] = useState(false)
+  const [isAdmin, setIsAdmin] = useState(false)
 
   useEffect(() => {
-    // Check if user is authenticated by checking for auth_token cookie
-    const checkAuth = async () => {
-      try {
-        const response = await fetch("/api/auth/check", {
-          method: "GET",
-        })
+    if (!authLoaded || !userLoaded) return
 
-        if (response.ok) {
-          setAuthenticated(true)
-        } else {
-          router.push("/login")
-        }
-      } catch (err) {
-        router.push("/login")
-      } finally {
-        setLoading(false)
-      }
+    if (!isSignedIn) {
+      router.push("/sign-in")
+      return
     }
 
-    checkAuth()
-  }, [router])
+    // Check if user has admin role
+    const role = (user?.publicMetadata?.role as string) || 'viewer'
+    
+    if (role !== 'admin') {
+      // Redirect non-admin users to portfolio
+      router.push("/portfolio")
+      return
+    }
 
-  if (loading) {
+    setIsAdmin(true)
+    setLoading(false)
+  }, [isSignedIn, authLoaded, userLoaded, user, router])
+
+  if (loading || !authLoaded || !userLoaded) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="animate-pulse">
@@ -42,7 +43,7 @@ export default function AdminPage() {
     )
   }
 
-  if (!authenticated) {
+  if (!isSignedIn || !isAdmin) {
     return null
   }
 

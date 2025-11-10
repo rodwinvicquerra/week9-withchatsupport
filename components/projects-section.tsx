@@ -8,13 +8,14 @@ import { ExternalLink, Github } from "lucide-react"
 
 const projects = [
   {
-    title: "VulnScanner Pro",
+    title: "Barangay Issue Reporting System",
     description:
-      "Automated vulnerability scanning tool that identifies security weaknesses in web applications. Features include OWASP Top 10 detection, custom rule engine, and detailed reporting.",
-    technologies: ["Python", "Flask", "SQLite", "Docker"],
+      "A community platform for reporting issues and managing events. Features resident and official dashboards, issue tracking, event management, and user authentication system.",
+    technologies: ["HTML", "CSS", "PHP", "WAMP", "MySQL"],
     github: "#",
-    demo: "#",
-    image: "/cybersecurity-scanner-dashboard.jpg",
+    demo: "http://codebyceto.site/brgyportal_2/",
+    image: "/placeholder.jpg",
+    featured: true,
   },
   {
     title: "SecureAuth Framework",

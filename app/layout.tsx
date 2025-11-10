@@ -6,6 +6,7 @@ import { Analytics } from "@vercel/analytics/next"
 import { ClerkProvider } from "@clerk/nextjs"
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
+import { Toaster } from "@/components/ui/sonner"
 import { Suspense } from "react"
 
 export const metadata: Metadata = {
@@ -36,6 +37,7 @@ export default function RootLayout({
                 {children}
               </ThemeProvider>
             </Suspense>
+            <Toaster />
             <Analytics />
           </ClerkProvider>
         ) : (

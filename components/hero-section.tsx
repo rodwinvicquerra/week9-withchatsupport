@@ -91,23 +91,24 @@ export function HeroSection() {
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       <canvas ref={canvasRef} className="absolute inset-0 pointer-events-none" aria-hidden="true" />
       <div className="relative z-10 text-center px-4 max-w-4xl mx-auto animate-in fade-in duration-1000">
-        <h1 className="text-6xl md:text-8xl font-bold mb-6 text-balance">Rodwin Vicquerra</h1>
-        <p className="text-2xl md:text-3xl text-muted-foreground mb-4 font-medium">IT Student | Web Developer</p>
-        <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-2xl mx-auto text-pretty">
-          3rd Year IT Student majoring in Web Development, passionate about creating modern web experiences
+        <h1 className="text-6xl md:text-8xl font-bold mb-6 text-balance bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent dark:from-white dark:via-accent dark:to-white">
+          Rodwin Vicquerra
+        </h1>
+        <p className="text-2xl md:text-3xl text-foreground mb-4 font-semibold">IT Student | Web Developer</p>
+        <p className="text-lg md:text-xl text-foreground/80 mb-2 max-w-2xl mx-auto text-pretty font-medium">
+          22 Years Old • San Rafael, Roxas, Isabela 3320
+        </p>
+        <p className="text-base md:text-lg text-muted-foreground mb-8 max-w-2xl mx-auto text-pretty">
+          3rd Year IT Student majoring in Web Development. Passionate about creating modern, responsive web experiences with React, Laravel, and Node.js
         </p>
         <div className="flex gap-4 justify-center">
-          <Button onClick={scrollToAbout} size="lg" className="group transition-all duration-300 hover:scale-105">
+          <Button 
+            onClick={scrollToAbout} 
+            size="lg" 
+            className="group transition-all duration-300 hover:scale-105 bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg font-semibold"
+          >
             Explore My Work
             <ArrowDown className="ml-2 h-4 w-4 group-hover:translate-y-1 transition-transform" />
-          </Button>
-          <Button 
-            variant="outline" 
-            size="lg" 
-            className="transition-all duration-300 hover:scale-105"
-            onClick={() => window.location.href = '/admin'}
-          >
-            Admin Dashboard
           </Button>
         </div>
       </div>

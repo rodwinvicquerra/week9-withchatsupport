@@ -8,7 +8,7 @@ import { GraduationCap, Award } from "lucide-react"
 const education = [
   {
     degree: "Bachelor of Science in Information Technology",
-    institution: "Your University Name",
+    institution: "St. Paul University Philippines",
     period: "2022 - Present",
     description:
       "Major in Web Development. Currently in 3rd year, focusing on full-stack web development, database management, and software engineering principles.",
@@ -17,9 +17,11 @@ const education = [
 ]
 
 const certifications = [
-  { name: "Web Development Courses", issuer: "Online Learning", year: "2024" },
-  { name: "JavaScript Fundamentals", issuer: "Self-Study", year: "2023" },
-  { name: "Responsive Web Design", issuer: "Online Platform", year: "2023" },
+  { name: "CyberSummit 2022", issuer: "St. Paul University Philippines", year: "2022", type: "Participation" },
+  { name: "CyberSummit 2023", issuer: "St. Paul University Philippines", year: "2023", type: "Participation" },
+  { name: "CyberSummit 2024", issuer: "St. Paul University Philippines", year: "2024", type: "Participation" },
+  { name: "HackTheNorth Seminar 2025", issuer: "St. Paul University Philippines", year: "2025", type: "Participation" },
+  { name: "Rich Media Film Showing", issuer: "St. Paul University Philippines", year: "2024", type: "1st Runner Up" },
 ]
 // </CHANGE>
 
@@ -93,6 +95,9 @@ export function EducationSection() {
                     <p className="text-xs text-muted-foreground">
                       {cert.issuer} • {cert.year}
                     </p>
+                    {cert.type && (
+                      <p className="text-xs text-accent font-medium mt-1">{cert.type}</p>
+                    )}
                   </div>
                 </div>
               </Card>
