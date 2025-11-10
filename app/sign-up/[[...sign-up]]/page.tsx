@@ -9,7 +9,7 @@ import { useTheme } from "next-themes"
 import { ThemeToggle } from "@/components/common"
 
 export default function SignUpPage() {
-  const { isSignedIn } = useAuth()
+  const { isSignedIn, isLoaded } = useAuth()
   const router = useRouter()
   const { resolvedTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
@@ -19,10 +19,19 @@ export default function SignUpPage() {
   }, [])
 
   useEffect(() => {
-    if (isSignedIn) router.replace("/portfolio")
-  }, [isSignedIn, router])
+    if (isLoaded && isSignedIn) router.replace("/portfolio")
+  }, [isLoaded, isSignedIn, router])
 
   const isDark = mounted && resolvedTheme === "dark"
+
+  // Prevent hydration mismatch by not rendering until client-side mounted
+  if (!mounted || !isLoaded) {
+    return (
+      <div className="min-h-screen w-full bg-background flex items-center justify-center">
+        <div className="text-muted-foreground">Loading...</div>
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen w-full bg-gradient-to-br from-background via-background to-secondary/20 relative overflow-hidden">

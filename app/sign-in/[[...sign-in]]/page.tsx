@@ -24,7 +24,14 @@ export default function SignInPage() {
 
   const isDark = mounted && resolvedTheme === "dark"
 
-  if (!isLoaded) return null
+  // Prevent hydration mismatch by not rendering until client-side mounted
+  if (!mounted || !isLoaded) {
+    return (
+      <div className="min-h-screen w-full bg-background flex items-center justify-center">
+        <div className="text-muted-foreground">Loading...</div>
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen w-full bg-gradient-to-br from-background via-background to-secondary/20 relative overflow-hidden">
