@@ -79,7 +79,9 @@ export function SocialMediaSection() {
                 href={social.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex flex-col items-center gap-4 text-center"
+                className="flex flex-col items-center gap-4 text-center focus:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-lg"
+                aria-label={`Visit my ${social.name} profile`}
+                title={`Visit my ${social.name} profile`}
               >
                 <div className={`p-4 rounded-full ${social.bgColor} transition-all duration-300 group-hover:scale-110`}>
                   <social.icon className={`h-8 w-8 ${social.color} transition-transform group-hover:rotate-12`} />
@@ -96,6 +98,7 @@ export function SocialMediaSection() {
                   variant="outline"
                   size="sm"
                   className="mt-2 group/btn border-2 hover:bg-primary hover:text-primary-foreground transition-all"
+                  aria-label={`Open ${social.name}`}
                 >
                   Visit Profile
                   <social.icon className="ml-2 h-4 w-4 group-hover/btn:translate-x-1 transition-transform" />
