@@ -9,10 +9,6 @@
           "value": "nosniff"
         },
         {
-          "key": "X-Frame-Options",
-          "value": "DENY"
-        },
-        {
           "key": "X-XSS-Protection",
           "value": "1; mode=block"
         },
@@ -30,7 +26,7 @@
         },
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://clerk.com https://*.clerk.accounts.dev; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://clerk.com https://*.clerk.accounts.dev https://api.clerk.com; frame-src https://clerk.com https://*.clerk.accounts.dev;"
+          "value": "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://clerk.com https://*.clerk.accounts.dev https://*.clerk.dev https://challenges.cloudflare.com https://www.google.com https://www.gstatic.com; style-src 'self' 'unsafe-inline' https://clerk.com https://*.clerk.accounts.dev; img-src 'self' data: https: blob:; font-src 'self' data: https://clerk.com https://*.clerk.accounts.dev; connect-src 'self' https://clerk.com https://*.clerk.accounts.dev https://*.clerk.dev https://api.clerk.com https://clerk.shared.lcl.dev; frame-src 'self' https://clerk.com https://*.clerk.accounts.dev https://*.clerk.dev https://challenges.cloudflare.com https://www.google.com; child-src 'self' https://clerk.com https://*.clerk.accounts.dev blob:;"
         }
       ]
     },
