@@ -15,18 +15,23 @@ import { ThemeToggle } from "@/components/theme-toggle"
 import { AnimatedBackground } from "@/components/animated-background"
 import { UserButton, useAuth, useClerk } from "@clerk/nextjs"
 import { useRouter } from "next/navigation"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 
 export default function PortfolioPage() {
   const { isSignedIn, isLoaded } = useAuth()
   const { signOut } = useClerk()
   const router = useRouter()
+  const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
     if (isLoaded && !isSignedIn) {
       router.replace("/sign-in")
     }
   }, [isLoaded, isSignedIn, router])
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   const handleSignOut = async () => {
     try {
@@ -53,25 +58,27 @@ export default function PortfolioPage() {
   return (
     <main className="min-h-screen bg-background text-foreground relative">
       <AnimatedBackground />
-      <nav className="fixed top-0 right-0 m-4 z-50 flex items-center gap-3">
-        <ThemeToggle />
-        <UserButton 
-          afterSignOutUrl="/sign-in"
-          appearance={{
-            elements: {
-              avatarBox: "w-10 h-10",
-              userButtonPopoverCard: "bg-background border border-border shadow-lg",
-              userButtonPopoverActionButton: "hover:bg-muted"
-            }
-          }}
-        />
-        <button
-          onClick={handleSignOut}
-          className="px-4 py-2 bg-destructive text-destructive-foreground rounded-md hover:bg-destructive/90 transition-colors font-medium shadow-md"
-        >
-          Sign Out
-        </button>
-      </nav>
+      {mounted && (
+        <nav className="fixed top-0 right-0 m-4 z-50 flex items-center gap-3">
+          <ThemeToggle />
+          <UserButton 
+            afterSignOutUrl="/sign-in"
+            appearance={{
+              elements: {
+                avatarBox: "w-10 h-10",
+                userButtonPopoverCard: "bg-background border border-border shadow-lg",
+                userButtonPopoverActionButton: "hover:bg-muted"
+              }
+            }}
+          />
+          <button
+            onClick={handleSignOut}
+          className="px-4 py-2 bg-destructive text-white dark:text-white rounded-md hover:bg-destructive/90 transition-colors font-medium shadow-md"
+          >
+            Sign Out
+          </button>
+        </nav>
+      )}
       <div className="relative z-10">
         <HeroSection />
         <AboutSection />

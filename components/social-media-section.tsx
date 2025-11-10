@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Facebook, Instagram, Youtube } from "lucide-react"
+import { Facebook, Instagram, Youtube, Music2 } from "lucide-react"
 
 const socialLinks = [
   {
@@ -29,6 +29,14 @@ const socialLinks = [
     color: "text-red-500",
     bgColor: "bg-red-500/10 hover:bg-red-500/20",
     description: "Subscribe to my YouTube channel",
+  },
+  {
+    name: "Spotify",
+    url: "https://open.spotify.com/user/31agoum6erjbm6zbthpyqwhp37ue?si=72ecb259451948b4",
+    icon: Music2,
+    color: "text-green-500",
+    bgColor: "bg-green-500/10 hover:bg-green-500/20",
+    description: "Follow my playlists on Spotify",
   },
 ]
 

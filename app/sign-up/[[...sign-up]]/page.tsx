@@ -105,6 +105,8 @@ export default function SignUpPage() {
                   alternativeMethods: "!mt-4",
                   dividerLine: isDark ? "!bg-gray-300" : "!bg-slate-400",
                   dividerText: isDark ? "!text-gray-600 !text-sm !bg-white" : "!text-slate-200 !text-sm !bg-slate-800",
+                  footerActionText: "hidden",
+                  footerActionLink: "hidden",
                 },
               }}
             />

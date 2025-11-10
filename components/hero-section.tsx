@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react"
 import { Button } from "@/components/ui/button"
 import { ArrowDown } from "lucide-react"
+import Image from "next/image"
 
 export function HeroSection() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -91,7 +92,19 @@ export function HeroSection() {
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       <canvas ref={canvasRef} className="absolute inset-0 pointer-events-none" aria-hidden="true" />
       <div className="relative z-10 text-center px-4 max-w-4xl mx-auto animate-in fade-in duration-1000">
-        <h1 className="text-6xl md:text-8xl font-bold mb-6 text-balance bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent dark:from-white dark:via-accent dark:to-white">
+        <div className="mb-6 flex justify-center">
+          <div className="relative h-28 w-28 md:h-36 md:w-36">
+            <Image
+              src="/profile.jpg"
+              alt="Rodwin Vicquerra profile photo"
+              fill
+              sizes="144px"
+              priority
+              className="rounded-full object-cover ring-2 ring-primary/40 shadow-xl"
+            />
+          </div>
+        </div>
+        <h1 className="text-6xl md:text-8xl font-bold mb-6 text-balance bg-clip-text text-transparent bg-gradient-to-r from-gray-900 via-gray-700 to-gray-900 dark:from-white dark:via-accent dark:to-white">
           Rodwin Vicquerra
         </h1>
         <p className="text-2xl md:text-3xl text-foreground mb-4 font-semibold">IT Student | Web Developer</p>
