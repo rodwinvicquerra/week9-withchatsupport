@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button"
 import { Shield, Lock, Activity, CheckCircle2, AlertTriangle, Download, ExternalLink, TrendingUp, Users, Zap, FileText } from "lucide-react"
 import Link from "next/link"
 import type { Metadata } from "next"
+import { auth } from "@clerk/nextjs/server"
+import { AccessDenied } from "@/components/common"
 
 export const metadata: Metadata = {
   title: "Security Portfolio - Rodwin Vicquerra",
@@ -14,7 +16,22 @@ export const metadata: Metadata = {
   },
 }
 
-export default function SecurityPage() {
+export default async function SecurityPage() {
+  // Check if user is authenticated and has admin role
+  const { userId, sessionClaims } = await auth()
+  
+  if (!userId) {
+    return <AccessDenied />
+  }
+
+  // Check for admin role in publicMetadata
+  const publicMetadata = sessionClaims?.publicMetadata as { role?: string } | undefined
+  const role = publicMetadata?.role || 'viewer'
+  
+  if (role !== 'admin') {
+    return <AccessDenied />
+  }
+
   return (
     <div className="min-h-screen bg-background py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">

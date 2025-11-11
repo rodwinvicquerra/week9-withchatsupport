@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import { ThemeToggle } from "@/components/common"
 import { Button } from "@/components/ui/button"
 import { Menu, X } from "lucide-react"
-import { UserButton, useAuth } from "@clerk/nextjs"
+import { UserButton, useAuth, useUser } from "@clerk/nextjs"
 import Link from "next/link"
 
 const navItems = [
@@ -13,7 +13,7 @@ const navItems = [
   { name: "Education", href: "#education" },
   { name: "Skills", href: "#skills" },
   { name: "Projects", href: "#projects" },
-  { name: "Security", href: "/security", isExternal: true },
+  { name: "Security", href: "/security", isExternal: true, adminOnly: true },
   { name: "Contact", href: "#contact" },
 ]
 
@@ -21,6 +21,14 @@ export function Navigation() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const { isSignedIn } = useAuth()
+  const { user } = useUser()
+
+  // Check if user has admin role
+  const publicMetadata = user?.publicMetadata as { role?: string } | undefined
+  const isAdmin = publicMetadata?.role === 'admin'
+
+  // Filter nav items based on admin status
+  const visibleNavItems = navItems.filter(item => !item.adminOnly || isAdmin)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -54,7 +62,7 @@ export function Navigation() {
               RODWIN VICQUERRA
             </button>
             <div className="hidden md:flex items-center gap-1">
-              {navItems.map((item) =>
+              {visibleNavItems.map((item) =>
                 item.isExternal ? (
                   <Button key={item.name} variant="ghost" asChild className="text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors px-4">
                     <Link href={item.href}>{item.name}</Link>
@@ -85,7 +93,7 @@ export function Navigation() {
           <div className="fixed inset-0 bg-background/80 backdrop-blur-sm" onClick={() => setIsMobileMenuOpen(false)} />
           <div className="fixed top-16 left-0 right-0 bg-card border-b border-border shadow-lg">
             <div className="px-4 py-6 space-y-1">
-              {navItems.map((item) =>
+              {visibleNavItems.map((item) =>
                 item.isExternal ? (
                   <Button key={item.name} variant="ghost" asChild className="w-full justify-start text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50">
                     <Link href={item.href}>{item.name}</Link>

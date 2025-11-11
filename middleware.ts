@@ -17,6 +17,8 @@ const isPublicRoute = createRouteMatcher([
 const isAdminRoute = createRouteMatcher([
   "/admin(.*)",
   "/api/admin(.*)",
+  "/security(.*)", // Admin-only security showcase
+  "/mcp-integration(.*)", // Admin-only MCP demo
 ]);
 
 export default clerkMiddleware(async (auth, req) => {
