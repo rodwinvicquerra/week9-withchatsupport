@@ -23,9 +23,10 @@ export function Navigation() {
   const { isSignedIn } = useAuth()
   const { user } = useUser()
 
-  // Check if user has admin role
+  // Check if user has admin role (case-insensitive)
   const publicMetadata = user?.publicMetadata as { role?: string } | undefined
-  const isAdmin = publicMetadata?.role === 'admin'
+  const role = publicMetadata?.role?.toLowerCase() || ''
+  const isAdmin = role === 'admin'
 
   // Filter nav items based on admin status
   const visibleNavItems = navItems.filter(item => !item.adminOnly || isAdmin)
@@ -64,13 +65,13 @@ export function Navigation() {
             <div className="hidden md:flex items-center gap-1">
               {visibleNavItems.map((item) =>
                 item.isExternal ? (
-                  <Link 
+                  <a 
                     key={item.name} 
                     href={item.href}
                     className="inline-flex items-center justify-center rounded-md text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors px-4 h-9 cursor-pointer"
                   >
                     {item.name}
-                  </Link>
+                  </a>
                 ) : (
                   <Button key={item.name} variant="ghost" onClick={() => scrollToSection(item.href)} className="text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors px-4">
                     {item.name}

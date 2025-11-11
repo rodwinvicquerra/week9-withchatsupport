@@ -24,9 +24,9 @@ export default async function SecurityPage() {
     return <AccessDenied />
   }
 
-  // Check for admin role in publicMetadata
+  // Check for admin role in publicMetadata (case-insensitive)
   const publicMetadata = user.publicMetadata as { role?: string } | undefined
-  const role = publicMetadata?.role || 'viewer'
+  const role = (publicMetadata?.role || 'viewer').toLowerCase()
   
   if (role !== 'admin') {
     return <AccessDenied />

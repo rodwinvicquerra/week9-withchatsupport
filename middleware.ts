@@ -12,13 +12,13 @@ const isPublicRoute = createRouteMatcher([
   "/sign-up(.*)", 
   "/api/public(.*)",
   "/mcp-security", // Make security docs public
+  "/security(.*)", // Security pages check role internally
+  "/mcp-integration(.*)", // MCP pages check role internally
 ]);
 
 const isAdminRoute = createRouteMatcher([
   "/admin(.*)",
   "/api/admin(.*)",
-  "/security(.*)", // Admin-only security showcase
-  "/mcp-integration(.*)", // Admin-only MCP demo
 ]);
 
 export default clerkMiddleware(async (auth, req) => {
@@ -38,9 +38,9 @@ export default clerkMiddleware(async (auth, req) => {
       return NextResponse.redirect(signInUrl);
     }
 
-    // Check if user has admin role in publicMetadata
+    // Check if user has admin role in publicMetadata (case-insensitive)
     const publicMetadata = sessionClaims?.publicMetadata as { role?: string } | undefined;
-    const role = publicMetadata?.role || 'viewer';
+    const role = (publicMetadata?.role || 'viewer').toLowerCase();
     
     if (role !== "admin") {
       // Redirect non-admin users to portfolio
