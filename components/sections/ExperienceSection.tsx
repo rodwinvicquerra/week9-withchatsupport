@@ -1,76 +1,56 @@
-﻿"use client"
+"use client"
 
 import { Card } from "@/components/ui/card"
-import { Briefcase, Calendar } from "lucide-react"
+import { Badge } from "@/components/ui/badge"
+import { Briefcase } from "lucide-react"
 
 const experiences = [
   {
-    title: "Full Stack Developer",
-    company: "Freelance",
+    title: "Student Developer",
+    company: "Currently Building Skills",
     period: "2023 - Present",
-    description: "Developing custom web applications for clients using modern technologies. Focus on responsive design, clean code, and client satisfaction.",
-    responsibilities: [
-      "Build full-stack web applications using React and Node.js",
-      "Implement RESTful APIs and database solutions",
-      "Collaborate with clients to understand requirements",
-      "Maintain and optimize existing applications"
-    ]
+    description:
+      "Focusing on learning web development technologies and building personal projects. Actively studying modern web frameworks, responsive design principles, and best practices in software development.",
+    technologies: ["Web Development", "Problem Solving", "Self-Learning", "Project-Based Learning"],
   },
-  {
-    title: "Web Development Intern",
-    company: "Various Projects",
-    period: "2022 - 2023",
-    description: "Contributed to multiple web development projects as part of academic requirements and personal development.",
-    responsibilities: [
-      "Developed frontend interfaces using React and Tailwind CSS",
-      "Assisted in backend development with Laravel and PHP",
-      "Participated in code reviews and team collaborations",
-      "Learned industry best practices and workflows"
-    ]
-  }
 ]
 
 export function ExperienceSection() {
   return (
-    <section id="experience" className="py-24 px-6 lg:px-8 bg-muted/30">
-      <div className="max-w-6xl mx-auto">
-        <div className="mb-16">
-          <h2 className="text-3xl lg:text-4xl font-bold text-primary mb-4">Professional Experience</h2>
-          <div className="h-1 w-20 bg-accent rounded-full" />
-        </div>
+    <section id="experience" className="py-20 px-4 sm:px-6 lg:px-8 bg-secondary/20">
+      <div className="max-w-5xl mx-auto">
+        <h2 className="text-3xl md:text-4xl font-bold mb-8 text-foreground">Experience</h2>
         
-        <div className="space-y-6">
-          {experiences.map((exp, idx) => (
-            <Card key={idx} className="p-8 border-l-4 border-l-primary hover:shadow-lg transition-shadow">
-              <div className="flex flex-col md:flex-row md:items-start md:justify-between mb-4">
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Briefcase className="h-5 w-5 text-primary" />
-                    <h3 className="text-xl font-semibold text-foreground">{exp.title}</h3>
+        <div className="relative">
+          <div className="absolute left-0 md:left-8 top-0 bottom-0 w-0.5 bg-border" />
+          <div className="space-y-8">
+            {experiences.map((exp, idx) => (
+              <div key={idx} className="relative pl-8 md:pl-20">
+                <div className="absolute left-0 md:left-6 top-2 w-5 h-5 rounded-full bg-primary border-4 border-background shadow-sm" />
+                <Card className="p-6 hover:shadow-lg transition-shadow">
+                  <div className="flex items-start gap-4">
+                    <div className="p-2 rounded-lg bg-primary/10">
+                      <Briefcase className="h-5 w-5 text-primary" />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="text-xl font-semibold mb-1">{exp.title}</h3>
+                      <p className="text-muted-foreground mb-3 text-sm">
+                        {exp.company} • {exp.period}
+                      </p>
+                      <p className="text-sm leading-relaxed mb-4 text-foreground/80">{exp.description}</p>
+                      <div className="flex flex-wrap gap-2">
+                        {exp.technologies.map((tech) => (
+                          <Badge key={tech} variant="outline" className="text-xs">
+                            {tech}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
                   </div>
-                  <p className="text-lg font-medium text-muted-foreground">{exp.company}</p>
-                </div>
-                <div className="flex items-center gap-2 text-sm text-muted-foreground mt-2 md:mt-0">
-                  <Calendar className="h-4 w-4" />
-                  <span>{exp.period}</span>
-                </div>
+                </Card>
               </div>
-              
-              <p className="text-foreground/80 mb-4">{exp.description}</p>
-              
-              <div className="space-y-2">
-                <h4 className="font-medium text-sm text-primary">Key Responsibilities:</h4>
-                <ul className="space-y-1">
-                  {exp.responsibilities.map((resp, respIdx) => (
-                    <li key={respIdx} className="text-sm text-muted-foreground flex items-start">
-                      <span className="mr-2"></span>
-                      <span>{resp}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </Card>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
     </section>

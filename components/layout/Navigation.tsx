@@ -9,9 +9,9 @@ import Link from "next/link"
 
 const navItems = [
   { name: "About", href: "#about" },
-  { name: "Experience", href: "#experience" },
-  { name: "Education", href: "#education" },
   { name: "Skills", href: "#skills" },
+  { name: "Goals", href: "#goals" },
+  { name: "Education", href: "#education" },
   { name: "Projects", href: "#projects" },
   { name: "Security", href: "/security", isExternal: true, adminOnly: true },
   { name: "Contact", href: "#contact" },

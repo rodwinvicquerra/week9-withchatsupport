@@ -6,7 +6,7 @@ import {
   AboutSection,
   SkillsSection,
   ProjectsSection,
-  ExperienceSection,
+  GoalsSection,
   EducationSection,
   ContactSection
 } from "@/components/sections"
@@ -42,7 +42,7 @@ export default function PortfolioPage() {
       <HeroSection />
       <AboutSection />
       <SkillsSection />
-      <ExperienceSection />
+      <GoalsSection />
       <EducationSection />
       <ProjectsSection />
       <ContactSection />
