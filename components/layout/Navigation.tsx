@@ -5,6 +5,7 @@ import { ThemeToggle } from "@/components/common"
 import { Button } from "@/components/ui/button"
 import { Menu, X } from "lucide-react"
 import { UserButton, useAuth } from "@clerk/nextjs"
+import Link from "next/link"
 
 const navItems = [
   { name: "About", href: "#about" },
@@ -12,6 +13,7 @@ const navItems = [
   { name: "Education", href: "#education" },
   { name: "Skills", href: "#skills" },
   { name: "Projects", href: "#projects" },
+  { name: "Security", href: "/security", isExternal: true },
   { name: "Contact", href: "#contact" },
 ]
 
@@ -52,11 +54,17 @@ export function Navigation() {
               RODWIN VICQUERRA
             </button>
             <div className="hidden md:flex items-center gap-1">
-              {navItems.map((item) => (
-                <Button key={item.name} variant="ghost" onClick={() => scrollToSection(item.href)} className="text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors px-4">
-                  {item.name}
-                </Button>
-              ))}
+              {navItems.map((item) =>
+                item.isExternal ? (
+                  <Button key={item.name} variant="ghost" asChild className="text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors px-4">
+                    <Link href={item.href}>{item.name}</Link>
+                  </Button>
+                ) : (
+                  <Button key={item.name} variant="ghost" onClick={() => scrollToSection(item.href)} className="text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors px-4">
+                    {item.name}
+                  </Button>
+                )
+              )}
               <div className="ml-4 flex items-center gap-3 pl-4 border-l border-border">
                 <ThemeToggle />
                 {isSignedIn && <UserButton afterSignOutUrl="/sign-in" />}
@@ -77,11 +85,17 @@ export function Navigation() {
           <div className="fixed inset-0 bg-background/80 backdrop-blur-sm" onClick={() => setIsMobileMenuOpen(false)} />
           <div className="fixed top-16 left-0 right-0 bg-card border-b border-border shadow-lg">
             <div className="px-4 py-6 space-y-1">
-              {navItems.map((item) => (
-                <Button key={item.name} variant="ghost" onClick={() => scrollToSection(item.href)} className="w-full justify-start text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50">
-                  {item.name}
-                </Button>
-              ))}
+              {navItems.map((item) =>
+                item.isExternal ? (
+                  <Button key={item.name} variant="ghost" asChild className="w-full justify-start text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50">
+                    <Link href={item.href}>{item.name}</Link>
+                  </Button>
+                ) : (
+                  <Button key={item.name} variant="ghost" onClick={() => scrollToSection(item.href)} className="w-full justify-start text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50">
+                    {item.name}
+                  </Button>
+                )
+              )}
             </div>
           </div>
         </div>
