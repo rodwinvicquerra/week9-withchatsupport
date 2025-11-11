@@ -5,7 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Lock, Server, Code, Play, FileCode, ArrowRight, CheckCircle, ExternalLink } from "lucide-react"
 import Link from "next/link"
 import type { Metadata } from "next"
-import { auth } from "@clerk/nextjs/server"
+import { currentUser } from "@clerk/nextjs/server"
 import { AccessDenied } from "@/components/common"
 
 export const metadata: Metadata = {
@@ -18,15 +18,15 @@ export const metadata: Metadata = {
 }
 
 export default async function MCPIntegrationPage() {
-  // Check if user is authenticated and has admin role
-  const { userId, sessionClaims } = await auth()
+  // Get current user with metadata
+  const user = await currentUser()
   
-  if (!userId) {
+  if (!user) {
     return <AccessDenied />
   }
 
   // Check for admin role in publicMetadata
-  const publicMetadata = sessionClaims?.publicMetadata as { role?: string } | undefined
+  const publicMetadata = user.publicMetadata as { role?: string } | undefined
   const role = publicMetadata?.role || 'viewer'
   
   if (role !== 'admin') {
