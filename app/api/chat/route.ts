@@ -55,7 +55,7 @@ export async function POST(req: Request) {
     ];
 
     // Check if we're on Vercel (production) or localhost  
-    const groqApiKey = process.env.OPENAI_API_KEY; // Using OPENAI_API_KEY variable name for Groq key
+    const groqApiKey = process.env.GROQ_API_KEY; // Reading from GROQ_API_KEY
     const isVercel = process.env.VERCEL === '1';
     const useGroq = isVercel && groqApiKey;
 
