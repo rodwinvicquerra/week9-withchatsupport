@@ -36,7 +36,7 @@ const projects = [
       problem: "AI tools needed secure server-to-server authentication with OAuth protection",
       solution: "Implemented MCP server with Clerk OAuth, security headers, and incident response",
       metrics: { security: "95/100", uptime: "99.9%", routes: 8 },
-      lmsLink: "#" // User can update with actual LMS module link
+      lmsLink: "#"
     }
   },
   {
@@ -189,116 +189,116 @@ export function ProjectsSection() {
                   key={currentIndex * itemsPerPage + idx}
                   className="group relative overflow-hidden hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border-2 hover:border-primary/50 bg-card"
                 >
-              {/* Gradient overlay on hover */}
-              <div className={`absolute inset-0 bg-gradient-to-br ${project.color} opacity-0 group-hover:opacity-10 transition-opacity duration-500`} />
-              
-              {/* Content */}
-              <div className="relative p-6 flex flex-col h-full">
-                {/* Header */}
-                <div className="flex items-start justify-between mb-4">
-                  <div className={`p-3 rounded-xl bg-gradient-to-br ${project.color} opacity-10 group-hover:opacity-20 transition-opacity`}>
-                    <Folder className="h-6 w-6 text-primary" />
-                  </div>
-                  {project.featured && (
-                    <div className="flex items-center gap-1 px-3 py-1 rounded-full bg-primary/10 border border-primary/20">
-                      <Star className="h-3 w-3 text-primary fill-primary" />
-                      <span className="text-xs font-semibold text-primary">Featured</span>
+                  {/* Gradient overlay on hover */}
+                  <div className={`absolute inset-0 bg-gradient-to-br ${project.color} opacity-0 group-hover:opacity-10 transition-opacity duration-500`} />
+                  
+                  {/* Content */}
+                  <div className="relative p-6 flex flex-col h-full">
+                    {/* Header */}
+                    <div className="flex items-start justify-between mb-4">
+                      <div className={`p-3 rounded-xl bg-gradient-to-br ${project.color} opacity-10 group-hover:opacity-20 transition-opacity`}>
+                        <Folder className="h-6 w-6 text-primary" />
+                      </div>
+                      {project.featured && (
+                        <div className="flex items-center gap-1 px-3 py-1 rounded-full bg-primary/10 border border-primary/20">
+                          <Star className="h-3 w-3 text-primary fill-primary" />
+                          <span className="text-xs font-semibold text-primary">Featured</span>
+                        </div>
+                      )}
                     </div>
-                  )}
-                </div>
-                
-                {/* Title & Description */}
-                <div className="flex-1 mb-4">
-                  <h3 className="text-xl font-bold mb-3 group-hover:text-primary transition-colors">
-                    {project.title}
-                  </h3>
-                  <p className="text-muted-foreground leading-relaxed text-sm">
-                    {project.description}
-                  </p>
-                </div>
-                
-                {/* Technologies */}
-                <div className="flex flex-wrap gap-2 mb-4">
-                  {project.technologies.map((tech, i) => (
-                    <Badge 
-                      key={i} 
-                      variant="secondary" 
-                      className="text-xs font-medium hover:bg-primary/10 hover:text-primary transition-colors"
-                    >
-                      {tech}
-                    </Badge>
-                  ))}
-                </div>
+                    
+                    {/* Title & Description */}
+                    <div className="flex-1 mb-4">
+                      <h3 className="text-xl font-bold mb-3 group-hover:text-primary transition-colors">
+                        {project.title}
+                      </h3>
+                      <p className="text-muted-foreground leading-relaxed text-sm">
+                        {project.description}
+                      </p>
+                    </div>
+                    
+                    {/* Technologies */}
+                    <div className="flex flex-wrap gap-2 mb-4">
+                      {project.technologies.map((tech, i) => (
+                        <Badge 
+                          key={i} 
+                          variant="secondary" 
+                          className="text-xs font-medium hover:bg-primary/10 hover:text-primary transition-colors"
+                        >
+                          {tech}
+                        </Badge>
+                      ))}
+                    </div>
 
-                {/* Case Study Metrics */}
-                {project.caseStudy && (
-                  <div className="mb-4 p-3 rounded-lg bg-muted/50 border border-border">
-                    <div className="flex items-center gap-2 mb-2">
-                      <TrendingUp className="h-4 w-4 text-primary" />
-                      <span className="text-xs font-semibold text-primary">CASE STUDY</span>
-                    </div>
-                    <div className="text-xs space-y-1.5">
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Problem:</span>
-                        <span className="font-medium text-right flex-1 ml-2">{project.caseStudy.problem}</span>
+                    {/* Case Study Metrics */}
+                    {project.caseStudy && (
+                      <div className="mb-4 p-3 rounded-lg bg-muted/50 border border-border">
+                        <div className="flex items-center gap-2 mb-2">
+                          <TrendingUp className="h-4 w-4 text-primary" />
+                          <span className="text-xs font-semibold text-primary">CASE STUDY</span>
+                        </div>
+                        <div className="text-xs space-y-1.5">
+                          <div className="flex justify-between">
+                            <span className="text-muted-foreground">Problem:</span>
+                            <span className="font-medium text-right flex-1 ml-2">{project.caseStudy.problem}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-muted-foreground">Solution:</span>
+                            <span className="font-medium text-right flex-1 ml-2">{project.caseStudy.solution}</span>
+                          </div>
+                          <div className="flex gap-2 mt-2 flex-wrap">
+                            {Object.entries(project.caseStudy.metrics).map(([key, value]) => (
+                              <Badge key={key} variant="outline" className="text-xs">
+                                {key}: {value}
+                              </Badge>
+                            ))}
+                          </div>
+                        </div>
                       </div>
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Solution:</span>
-                        <span className="font-medium text-right flex-1 ml-2">{project.caseStudy.solution}</span>
-                      </div>
-                      <div className="flex gap-2 mt-2 flex-wrap">
-                        {Object.entries(project.caseStudy.metrics).map(([key, value]) => (
-                          <Badge key={key} variant="outline" className="text-xs">
-                            {key}: {value}
-                          </Badge>
-                        ))}
-                      </div>
+                    )}
+                    
+                    {/* Actions */}
+                    <div className="flex gap-3 pt-4 border-t border-border">
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="flex-1 gap-2 group-hover:border-primary group-hover:text-primary transition-all" 
+                        asChild
+                      >
+                        <a href={project.github} target="_blank" rel="noopener noreferrer">
+                          <Github className="h-4 w-4" />
+                          Code
+                        </a>
+                      </Button>
+                      <Button 
+                        size="sm" 
+                        className="flex-1 gap-2 bg-primary hover:bg-primary/90 shadow-sm hover:shadow-lg transition-all" 
+                        asChild
+                      >
+                        <a href={project.demo} target="_blank" rel="noopener noreferrer">
+                          <ExternalLink className="h-4 w-4" />
+                          Demo
+                        </a>
+                      </Button>
+                      {project.caseStudy?.lmsLink && project.caseStudy.lmsLink !== "#" && (
+                        <Button 
+                          variant="secondary" 
+                          size="sm" 
+                          className="gap-2" 
+                          asChild
+                        >
+                          <a href={project.caseStudy.lmsLink} target="_blank" rel="noopener noreferrer">
+                            <BookOpen className="h-4 w-4" />
+                            LMS
+                          </a>
+                        </Button>
+                      )}
                     </div>
                   </div>
-                )}
-                
-                {/* Actions */}
-                <div className="flex gap-3 pt-4 border-t border-border">
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    className="flex-1 gap-2 group-hover:border-primary group-hover:text-primary transition-all" 
-                    asChild
-                  >
-                    <a href={project.github} target="_blank" rel="noopener noreferrer">
-                      <Github className="h-4 w-4" />
-                      Code
-                    </a>
-                  </Button>
-                  <Button 
-                    size="sm" 
-                    className="flex-1 gap-2 bg-primary hover:bg-primary/90 shadow-sm hover:shadow-lg transition-all" 
-                    asChild
-                  >
-                    <a href={project.demo} target="_blank" rel="noopener noreferrer">
-                      <ExternalLink className="h-4 w-4" />
-                      Demo
-                    </a>
-                  </Button>
-                  {project.caseStudy?.lmsLink && project.caseStudy.lmsLink !== "#" && (
-                    <Button 
-                      variant="secondary" 
-                      size="sm" 
-                      className="gap-2" 
-                      asChild
-                    >
-                      <a href={project.caseStudy.lmsLink} target="_blank" rel="noopener noreferrer">
-                        <BookOpen className="h-4 w-4" />
-                        LMS
-                      </a>
-                    </Button>
-                  )}
-                </div>
-              </div>
 
-              {/* Corner decoration */}
-              <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-primary/5 to-transparent rounded-bl-full" />
-            </Card>
+                  {/* Corner decoration */}
+                  <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-primary/5 to-transparent rounded-bl-full" />
+                </Card>
               ))}
             </div>
           </div>
