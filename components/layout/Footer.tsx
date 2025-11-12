@@ -1,10 +1,8 @@
-﻿"use client"
+"use client"
 
 import { Github, Linkedin, Mail } from "lucide-react"
 
 export function Footer() {
-  const currentYear = new Date().getFullYear()
-
   return (
     <footer className="bg-primary text-primary-foreground py-12 px-6 lg:px-8">
       <div className="max-w-6xl mx-auto">
@@ -55,7 +53,7 @@ export function Footer() {
                 <Github className="h-5 w-5" />
               </a>
               <a 
-                href="https://linkedin.com" 
+                href="https://www.linkedin.com/in/rodwin-vicquerra-957630387/" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="p-2 bg-primary-foreground/10 hover:bg-primary-foreground/20 rounded-lg transition-colors"
@@ -64,7 +62,7 @@ export function Footer() {
                 <Linkedin className="h-5 w-5" />
               </a>
               <a 
-                href="mailto:rodwin@example.com"
+                href="mailto:rodwinvicquerra@spup.edu.ph"
                 className="p-2 bg-primary-foreground/10 hover:bg-primary-foreground/20 rounded-lg transition-colors"
                 aria-label="Email"
               >
@@ -75,7 +73,7 @@ export function Footer() {
         </div>
 
         <div className="pt-8 border-t border-primary-foreground/20 text-center text-sm text-primary-foreground/80">
-          <p> {currentYear} Rodwin Vicquerra. All rights reserved.</p>
+          <p>© 2024 Rodwin Vicquerra. All rights reserved.</p>
         </div>
       </div>
     </footer>

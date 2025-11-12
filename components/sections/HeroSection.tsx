@@ -41,10 +41,10 @@ export function HeroSection() {
               <a href="https://github.com/rodwinvicquerra" target="_blank" rel="noopener noreferrer" className="p-2 text-muted-foreground hover:text-primary transition-colors" aria-label="GitHub">
                 <Github className="h-5 w-5" />
               </a>
-              <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="p-2 text-muted-foreground hover:text-primary transition-colors" aria-label="LinkedIn">
+              <a href="https://www.linkedin.com/in/rodwin-vicquerra-957630387/" target="_blank" rel="noopener noreferrer" className="p-2 text-muted-foreground hover:text-primary transition-colors" aria-label="LinkedIn">
                 <Linkedin className="h-5 w-5" />
               </a>
-              <a href="mailto:rodwin@example.com" className="p-2 text-muted-foreground hover:text-primary transition-colors" aria-label="Email">
+              <a href="mailto:rodwinvicquerra@spup.edu.ph" className="p-2 text-muted-foreground hover:text-primary transition-colors" aria-label="Email">
                 <Mail className="h-5 w-5" />
               </a>
             </div>
