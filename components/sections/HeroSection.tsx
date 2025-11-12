@@ -51,9 +51,8 @@ export function HeroSection() {
           </div>
           <div className="flex justify-center lg:justify-end">
             <div className="relative h-[500px] w-80 lg:h-[600px] lg:w-96">
-              <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-accent/10 rounded-lg" />
-              <div className="absolute inset-2 rounded-lg overflow-hidden bg-card border border-border shadow-xl">
-                <Image src="/images/profile.jpg" alt="Rodwin Vicquerra" fill className="object-contain" priority />
+              <div className="absolute inset-0 rounded-lg overflow-hidden bg-card border border-border shadow-xl">
+                <Image src="/images/profile.jpg" alt="Rodwin Vicquerra" fill className="object-cover" priority />
               </div>
             </div>
           </div>
