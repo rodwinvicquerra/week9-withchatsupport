@@ -36,6 +36,7 @@ export function ChatWidget({ isOpen, onClose }: ChatWidgetProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const recognitionRef = useRef<any>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const hasPermission = useRef<boolean>(false);
 
   // Load chat history from localStorage
   useEffect(() => {
@@ -173,14 +174,17 @@ export function ChatWidget({ isOpen, onClose }: ChatWidgetProps) {
       return;
     }
 
-    // Request microphone permission explicitly
-    try {
-      await navigator.mediaDevices.getUserMedia({ audio: true });
-      console.log('Microphone permission granted');
-    } catch (err) {
-      console.error('Microphone permission error:', err);
-      alert('Please allow microphone access:\n1. Click the 🔒 or ⓘ icon in your browser address bar\n2. Find "Microphone" and set it to "Allow"\n3. Refresh the page and try again');
-      return;
+    // Request microphone permission only once
+    if (!hasPermission.current) {
+      try {
+        await navigator.mediaDevices.getUserMedia({ audio: true });
+        hasPermission.current = true;
+        console.log('Microphone permission granted');
+      } catch (err) {
+        console.error('Microphone permission error:', err);
+        alert('Please allow microphone access:\n1. Click the 🔒 or ⓘ icon in your browser address bar\n2. Find "Microphone" and set it to "Allow"\n3. Click OK, then try the microphone button again');
+        return;
+      }
     }
 
     // Initialize recognition if not already done or recreate it
