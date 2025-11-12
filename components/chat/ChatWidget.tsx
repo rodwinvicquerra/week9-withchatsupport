@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { X, Send, Loader2, Bot, User, Copy, Check, ThumbsUp, ThumbsDown, Mic, MicOff } from 'lucide-react';
+import { X, Send, Loader2, Bot, User, Copy, Check, ThumbsUp, ThumbsDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -31,12 +31,8 @@ export function ChatWidget({ isOpen, onClose }: ChatWidgetProps) {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [copiedId, setCopiedId] = useState<string | null>(null);
-  const [isListening, setIsListening] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const recognitionRef = useRef<any>(null);
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const hasPermission = useRef<boolean>(false);
 
   // Load chat history from localStorage
   useEffect(() => {
@@ -148,75 +144,6 @@ export function ChatWidget({ isOpen, onClose }: ChatWidgetProps) {
         msg.id === id ? { ...msg, reaction: msg.reaction === reaction ? undefined : reaction } : msg
       )
     );
-  };
-
-  const toggleVoiceInput = () => {
-    // Check browser support
-    if (typeof window === 'undefined' || (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window))) {
-      console.log('Speech recognition not supported');
-      return;
-    }
-
-    // Stop if already listening
-    if (isListening) {
-      if (recognitionRef.current) {
-        recognitionRef.current.stop();
-      }
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-      setIsListening(false);
-      return;
-    }
-
-    // Create recognition object
-    const SpeechRecognition = (window as any).webkitSpeechRecognition || (window as any).SpeechRecognition;
-    recognitionRef.current = new SpeechRecognition();
-    recognitionRef.current.continuous = false;
-    recognitionRef.current.interimResults = false;
-    recognitionRef.current.lang = 'en-US';
-
-    recognitionRef.current.onstart = () => {
-      setIsListening(true);
-      console.log('Voice: Started');
-    };
-
-    recognitionRef.current.onresult = (event: any) => {
-      const transcript = event.results[0][0].transcript;
-      setInput(transcript);
-      console.log('Voice: ' + transcript);
-    };
-
-    recognitionRef.current.onerror = (event: any) => {
-      console.log('Voice error:', event.error);
-      setIsListening(false);
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-    };
-
-    recognitionRef.current.onend = () => {
-      setIsListening(false);
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-      console.log('Voice: Stopped');
-    };
-
-    // Start recognition
-    try {
-      recognitionRef.current.start();
-      
-      // Auto-stop after 5 seconds
-      timeoutRef.current = setTimeout(() => {
-        if (recognitionRef.current) {
-          recognitionRef.current.stop();
-        }
-      }, 5000);
-    } catch (error) {
-      console.log('Voice: Failed to start');
-      setIsListening(false);
-    }
   };
 
   const clearHistory = () => {
@@ -373,27 +300,10 @@ export function ChatWidget({ isOpen, onClose }: ChatWidgetProps) {
               ref={inputRef}
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder={isListening ? "Listening..." : "Ask about skills, projects, goals..."}
+              placeholder="Ask about skills, projects, goals..."
               disabled={isLoading}
               className="flex-1 bg-gray-50 dark:bg-gray-900 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 placeholder:text-gray-500 dark:placeholder:text-gray-400"
             />
-            <Button
-              type="button"
-              size="icon"
-              onClick={toggleVoiceInput}
-              disabled={isLoading}
-              className={cn(
-                "bg-gray-900 dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-100 text-white dark:text-gray-900",
-                isListening && "bg-red-600 dark:bg-red-600 hover:bg-red-700 dark:hover:bg-red-700 animate-pulse"
-              )}
-              title="Voice input"
-            >
-              {isListening ? (
-                <MicOff className="h-4 w-4" />
-              ) : (
-                <Mic className="h-4 w-4" />
-              )}
-            </Button>
             <Button 
               type="submit" 
               size="icon" 
