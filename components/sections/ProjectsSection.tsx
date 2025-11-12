@@ -125,7 +125,7 @@ export function ProjectsSection() {
   const visibleProjects = projects.slice(
     currentIndex * itemsPerPage,
     (currentIndex + 1) * itemsPerPage
-  )
+  );
 
   return (
     <section id="projects" className="py-24 px-4 sm:px-6 lg:px-8 bg-muted/30 relative overflow-hidden">
