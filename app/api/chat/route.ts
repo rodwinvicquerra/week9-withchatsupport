@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { portfolioContext } from '@/lib/portfolio-context';
+import Groq from 'groq-sdk';
 
 // Simple rate limiting (in-memory for demo - use Redis for production)
 const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
@@ -65,34 +66,21 @@ export async function POST(req: Request) {
       console.log('Using Groq API on Vercel');
       
       try {
-        response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${groqApiKey}`,
-          },
-          body: JSON.stringify({
-            model: 'llama-3.1-70b-versatile', // Fast and free
-            messages: chatMessages,
-            temperature: 0.7,
-            max_tokens: 500,
-          }),
+        const groq = new Groq({
+          apiKey: groqApiKey,
         });
 
-        if (!response.ok) {
-          const errorData = await response.text();
-          console.error('Groq API error:', response.status, errorData);
-          return NextResponse.json(
-            { error: `Groq API error: ${response.status}` },
-            { status: response.status }
-          );
-        }
+        const completion = await groq.chat.completions.create({
+          model: 'llama-3.1-70b-versatile',
+          messages: chatMessages as any,
+          temperature: 0.7,
+          max_tokens: 500,
+        });
 
-        const data = await response.json();
-        const assistantMessage = data.choices?.[0]?.message?.content;
+        const assistantMessage = completion.choices[0]?.message?.content;
 
         if (!assistantMessage) {
-          console.error('No message in Groq response:', data);
+          console.error('No message in Groq response:', completion);
           return NextResponse.json(
             { error: 'No response from AI' },
             { status: 500 }
@@ -103,7 +91,7 @@ export async function POST(req: Request) {
           message: assistantMessage,
         });
       } catch (error) {
-        console.error('Groq fetch error:', error);
+        console.error('Groq SDK error:', error);
         return NextResponse.json(
           { error: `Failed to connect to Groq: ${error instanceof Error ? error.message : 'Unknown error'}` },
           { status: 500 }
