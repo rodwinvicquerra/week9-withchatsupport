@@ -35,6 +35,7 @@ export function ChatWidget({ isOpen, onClose }: ChatWidgetProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const recognitionRef = useRef<any>(null);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Load chat history from localStorage
   useEffect(() => {
@@ -72,31 +73,7 @@ export function ChatWidget({ isOpen, onClose }: ChatWidgetProps) {
     }
   }, [isOpen]);
 
-  // Initialize speech recognition
-  useEffect(() => {
-    if (typeof window !== 'undefined' && ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
-      const SpeechRecognition = (window as any).webkitSpeechRecognition || (window as any).SpeechRecognition;
-      recognitionRef.current = new SpeechRecognition();
-      recognitionRef.current.continuous = false;
-      recognitionRef.current.interimResults = false;
-      recognitionRef.current.lang = 'en-US'; // Set language for better Edge compatibility
-
-      recognitionRef.current.onresult = (event: any) => {
-        const transcript = event.results[0][0].transcript;
-        setInput(transcript);
-        setIsListening(false);
-      };
-
-      recognitionRef.current.onerror = (event: any) => {
-        console.error('Speech recognition error:', event.error);
-        setIsListening(false);
-      };
-
-      recognitionRef.current.onend = () => {
-        setIsListening(false);
-      };
-    }
-  }, []);
+  // Speech recognition will be initialized on first use (removed duplicate initialization)
 
   const handleSubmit = async (e?: React.FormEvent, suggestedQuestion?: string) => {
     if (e) e.preventDefault();
@@ -207,20 +184,31 @@ export function ChatWidget({ isOpen, onClose }: ChatWidgetProps) {
     }
 
     if (isListening) {
-      recognitionRef.current.stop();
+      // Stop listening
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+        timeoutRef.current = null;
+      }
+      try {
+        recognitionRef.current.stop();
+      } catch (e) {
+        console.log('Recognition already stopped');
+      }
       setIsListening(false);
     } else {
       try {
         recognitionRef.current.start();
         setIsListening(true);
+        console.log('Voice recognition started - speak now!');
         
         // Auto-stop after 5 seconds
-        setTimeout(() => {
+        timeoutRef.current = setTimeout(() => {
           if (recognitionRef.current) {
             try {
               recognitionRef.current.stop();
+              console.log('Voice recognition auto-stopped after 5 seconds');
             } catch (e) {
-              // Already stopped
+              console.log('Recognition already stopped');
             }
             setIsListening(false);
           }
