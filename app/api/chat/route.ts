@@ -63,20 +63,24 @@ export async function POST(req: Request) {
 
     if (useGroq) {
       // Use Groq for Vercel deployment
-      console.log('Using Groq API on Vercel');
+      console.log('Using Groq API on Vercel, API Key exists:', !!groqApiKey);
       
       try {
         const groq = new Groq({
           apiKey: groqApiKey,
+          timeout: 30000, // 30 second timeout
         });
 
+        console.log('Groq client created, calling API...');
+        
         const completion = await groq.chat.completions.create({
-          model: 'llama-3.1-70b-versatile',
+          model: 'llama3-8b-8192', // Smaller, faster model
           messages: chatMessages as any,
           temperature: 0.7,
-          max_tokens: 500,
+          max_tokens: 300,
         });
 
+        console.log('Groq API response received');
         const assistantMessage = completion.choices[0]?.message?.content;
 
         if (!assistantMessage) {
