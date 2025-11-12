@@ -63,42 +63,52 @@ export async function POST(req: Request) {
     if (useGroq) {
       // Use Groq for Vercel deployment
       console.log('Using Groq API on Vercel');
-      response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${groqApiKey}`,
-        },
-        body: JSON.stringify({
-          model: 'llama-3.1-70b-versatile', // Fast and free
-          messages: chatMessages,
-          temperature: 0.7,
-          max_tokens: 500,
-        }),
-      });
+      
+      try {
+        response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${groqApiKey}`,
+          },
+          body: JSON.stringify({
+            model: 'llama-3.1-70b-versatile', // Fast and free
+            messages: chatMessages,
+            temperature: 0.7,
+            max_tokens: 500,
+          }),
+        });
 
-      if (!response.ok) {
-        const errorData = await response.text();
-        console.error('Groq API error:', errorData);
+        if (!response.ok) {
+          const errorData = await response.text();
+          console.error('Groq API error:', response.status, errorData);
+          return NextResponse.json(
+            { error: `Groq API error: ${response.status}` },
+            { status: response.status }
+          );
+        }
+
+        const data = await response.json();
+        const assistantMessage = data.choices?.[0]?.message?.content;
+
+        if (!assistantMessage) {
+          console.error('No message in Groq response:', data);
+          return NextResponse.json(
+            { error: 'No response from AI' },
+            { status: 500 }
+          );
+        }
+
+        return NextResponse.json({
+          message: assistantMessage,
+        });
+      } catch (error) {
+        console.error('Groq fetch error:', error);
         return NextResponse.json(
-          { error: 'Failed to get response from AI' },
-          { status: response.status }
-        );
-      }
-
-      const data = await response.json();
-      const assistantMessage = data.choices?.[0]?.message?.content;
-
-      if (!assistantMessage) {
-        return NextResponse.json(
-          { error: 'No response from AI' },
+          { error: `Failed to connect to Groq: ${error instanceof Error ? error.message : 'Unknown error'}` },
           { status: 500 }
         );
       }
-
-      return NextResponse.json({
-        message: assistantMessage,
-      });
     } else {
       // Use Ollama for local development
       console.log('Using Ollama for localhost');
