@@ -185,7 +185,6 @@ export function ProjectsSection() {
               }}
             >
               {visibleProjects.map((project, idx) => (
-              {visibleProjects.map((project, idx) => (
                 <Card
                   key={currentIndex * itemsPerPage + idx}
                   className="group relative overflow-hidden hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border-2 hover:border-primary/50 bg-card"
