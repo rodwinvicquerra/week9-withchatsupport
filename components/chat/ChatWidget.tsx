@@ -173,9 +173,37 @@ export function ChatWidget({ isOpen, onClose }: ChatWidgetProps) {
   };
 
   const toggleVoiceInput = () => {
-    if (!recognitionRef.current) {
+    // Check if Speech Recognition is available
+    if (typeof window === 'undefined' || (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window))) {
       alert('Voice input is not supported in your browser. Please use Chrome, Edge, or Safari.');
       return;
+    }
+
+    // Initialize recognition if not already done
+    if (!recognitionRef.current) {
+      const SpeechRecognition = (window as any).webkitSpeechRecognition || (window as any).SpeechRecognition;
+      recognitionRef.current = new SpeechRecognition();
+      recognitionRef.current.continuous = false;
+      recognitionRef.current.interimResults = false;
+      recognitionRef.current.lang = 'en-US';
+
+      recognitionRef.current.onresult = (event: any) => {
+        const transcript = event.results[0][0].transcript;
+        setInput(transcript);
+        setIsListening(false);
+      };
+
+      recognitionRef.current.onerror = (event: any) => {
+        console.error('Speech recognition error:', event.error);
+        setIsListening(false);
+        if (event.error === 'not-allowed') {
+          alert('Microphone access denied. Please allow microphone permissions in your browser settings.');
+        }
+      };
+
+      recognitionRef.current.onend = () => {
+        setIsListening(false);
+      };
     }
 
     if (isListening) {
@@ -188,15 +216,25 @@ export function ChatWidget({ isOpen, onClose }: ChatWidgetProps) {
         
         // Auto-stop after 5 seconds
         setTimeout(() => {
-          if (recognitionRef.current && isListening) {
-            recognitionRef.current.stop();
+          if (recognitionRef.current) {
+            try {
+              recognitionRef.current.stop();
+            } catch (e) {
+              // Already stopped
+            }
             setIsListening(false);
           }
         }, 5000);
-      } catch (error) {
+      } catch (error: any) {
         console.error('Failed to start voice recognition:', error);
         setIsListening(false);
-        alert('Could not start voice input. Please check microphone permissions.');
+        
+        // Specific error messages
+        if (error.message && error.message.includes('already started')) {
+          alert('Voice input is already active. Please wait a moment and try again.');
+        } else {
+          alert('Could not start voice input. Please check microphone permissions in your browser settings.');
+        }
       }
     }
   };
