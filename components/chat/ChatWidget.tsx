@@ -109,7 +109,7 @@ export function ChatWidget({ isOpen, onClose }: ChatWidgetProps) {
     <div className="fixed bottom-[140px] right-6 z-50 w-[420px] max-w-[calc(100vw-2rem)]">
       <div className="flex flex-col h-[550px] max-h-[75vh] bg-white dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-xl shadow-2xl">
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-blue-600 to-blue-700 dark:from-blue-500 dark:to-blue-600 text-white rounded-t-xl">
+        <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white rounded-t-xl">
           <div className="flex items-center gap-2">
             <Bot className="h-5 w-5" />
             <h3 className="font-semibold">Portfolio Assistant</h3>
@@ -118,7 +118,7 @@ export function ChatWidget({ isOpen, onClose }: ChatWidgetProps) {
             variant="ghost"
             size="icon"
             onClick={onClose}
-            className="text-white hover:bg-white/20"
+            className="text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-800"
           >
             <X className="h-5 w-5" />
           </Button>
@@ -136,15 +136,15 @@ export function ChatWidget({ isOpen, onClose }: ChatWidgetProps) {
                 )}
               >
                 {message.role === 'assistant' && (
-                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-blue-600 to-blue-700 dark:from-blue-500 dark:to-blue-600 flex items-center justify-center">
-                    <Bot className="h-4 w-4 text-white" />
+                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gray-900 dark:bg-white flex items-center justify-center">
+                    <Bot className="h-4 w-4 text-white dark:text-gray-900" />
                   </div>
                 )}
                 <div
                   className={cn(
                     'max-w-[80%] rounded-lg px-4 py-2.5 break-words shadow-sm',
                     message.role === 'user'
-                      ? 'bg-gradient-to-br from-blue-600 to-blue-700 dark:from-blue-500 dark:to-blue-600 text-white'
+                      ? 'bg-gray-900 dark:bg-white text-white dark:text-gray-900'
                       : 'bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-600'
                   )}
                 >
@@ -161,11 +161,11 @@ export function ChatWidget({ isOpen, onClose }: ChatWidgetProps) {
             ))}
             {isLoading && (
               <div className="flex gap-3 justify-start">
-                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-blue-600 to-blue-700 dark:from-blue-500 dark:to-blue-600 flex items-center justify-center">
-                  <Bot className="h-4 w-4 text-white" />
+                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gray-900 dark:bg-white flex items-center justify-center">
+                  <Bot className="h-4 w-4 text-white dark:text-gray-900" />
                 </div>
                 <div className="bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg px-4 py-2">
-                  <Loader2 className="h-4 w-4 animate-spin text-blue-600 dark:text-blue-400" />
+                  <Loader2 className="h-4 w-4 animate-spin text-gray-900 dark:text-white" />
                 </div>
               </div>
             )}
@@ -188,7 +188,7 @@ export function ChatWidget({ isOpen, onClose }: ChatWidgetProps) {
               type="submit" 
               size="icon" 
               disabled={isLoading || !input.trim()}
-              className="bg-gradient-to-br from-blue-600 to-blue-700 dark:from-blue-500 dark:to-blue-600 hover:from-blue-700 hover:to-blue-800 dark:hover:from-blue-600 dark:hover:to-blue-700 text-white"
+              className="bg-gray-900 dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-100 text-white dark:text-gray-900"
             >
               {isLoading ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
