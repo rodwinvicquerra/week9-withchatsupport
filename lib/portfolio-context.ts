@@ -26,11 +26,25 @@ Rodwin Vicquerra is an aspiring full-stack developer with a strong focus on secu
 - **Learning Focus**: Full-stack development, web security, database design, cloud deployment
 
 # Education
-Currently pursuing full-stack development education with emphasis on:
-- Modern web frameworks (React, Next.js)
-- Security implementation and testing
-- Database management and API design
-- DevOps and deployment practices
+
+## Bachelor of Science in Information Technology
+**Major in Web Development**
+- **Institution**: St. Paul University Philippines
+- **Location**: Tuguegarao City, Cagayan
+- **Period**: 2022 - Present (3rd Year)
+- **Status**: Currently Enrolled
+
+## Academic Highlights:
+- Maintaining strong academic performance
+- Active participation in programming projects
+- Focus on modern web development technologies
+- Collaborative team projects and presentations
+
+## Certifications & Training:
+- Web Development Fundamentals
+- Database Management
+- React.js Development
+- Full Stack Development
 
 # Featured Projects
 
@@ -67,11 +81,31 @@ Currently pursuing full-stack development education with emphasis on:
 4. **Technical Leadership**: Mentor junior developers, write technical blog posts, speak at meetups
 
 # Contact Information
-Visitors can reach out through the contact form on the portfolio website for:
-- Job opportunities
-- Collaboration on projects
-- Technical questions
-- Mentorship inquiries
+
+## Get in Touch
+Rodwin is open to opportunities and collaborations. Here are the ways to connect:
+
+**Email**: rodwinvicquerra@spup.edu.ph
+- Best for: Job opportunities, project collaborations, formal inquiries
+- Response time: Within 24-48 hours
+
+**GitHub**: https://github.com/rodwinvicquerra
+- View code repositories and contributions
+- Open source projects and portfolio code
+
+**LinkedIn**: https://www.linkedin.com/in/rodwin-vicquerra-957630387/
+- Professional networking
+- Career updates and achievements
+
+## What to Contact About:
+✅ Job opportunities and internships
+✅ Freelance project collaborations
+✅ Technical questions about projects
+✅ Mentorship and learning opportunities
+✅ Speaking engagements or presentations
+
+## Contact Form:
+Visitors can also use the contact form on the portfolio website for quick inquiries. All messages are reviewed and responded to promptly.
 
 ---
 

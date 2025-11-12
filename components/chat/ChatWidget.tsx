@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { X, Send, Loader2, Bot, User } from 'lucide-react';
+import { X, Send, Loader2, Bot, User, Copy, Check, ThumbsUp, ThumbsDown, Mic, MicOff } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -11,6 +11,7 @@ interface Message {
   id: string;
   role: 'user' | 'assistant';
   content: string;
+  reaction?: 'like' | 'dislike';
 }
 
 interface ChatWidgetProps {
@@ -18,19 +19,46 @@ interface ChatWidgetProps {
   onClose: () => void;
 }
 
+const SUGGESTED_QUESTIONS = [
+  "Tell me about your skills",
+  "Show me your projects",
+  "What are your goals?",
+  "How can I contact you?"
+];
+
 export function ChatWidget({ isOpen, onClose }: ChatWidgetProps) {
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: '1',
-      role: 'assistant',
-      content:
-        "Hi! I'm Rodwin's AI assistant. Ask me about his skills, projects, education, or career goals!",
-    },
-  ]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [isListening, setIsListening] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const recognitionRef = useRef<any>(null);
+
+  // Load chat history from localStorage
+  useEffect(() => {
+    const savedMessages = localStorage.getItem('chatHistory');
+    if (savedMessages) {
+      setMessages(JSON.parse(savedMessages));
+    } else {
+      setMessages([
+        {
+          id: '1',
+          role: 'assistant',
+          content:
+            "Hi! 👋 I'm Rodwin's AI assistant. Ask me about his skills, projects, education, or career goals!",
+        },
+      ]);
+    }
+  }, []);
+
+  // Save chat history to localStorage
+  useEffect(() => {
+    if (messages.length > 0) {
+      localStorage.setItem('chatHistory', JSON.stringify(messages));
+    }
+  }, [messages]);
 
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
@@ -44,15 +72,40 @@ export function ChatWidget({ isOpen, onClose }: ChatWidgetProps) {
     }
   }, [isOpen]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  // Initialize speech recognition
+  useEffect(() => {
+    if (typeof window !== 'undefined' && ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
+      const SpeechRecognition = (window as any).webkitSpeechRecognition || (window as any).SpeechRecognition;
+      recognitionRef.current = new SpeechRecognition();
+      recognitionRef.current.continuous = false;
+      recognitionRef.current.interimResults = false;
 
-    if (!input.trim() || isLoading) return;
+      recognitionRef.current.onresult = (event: any) => {
+        const transcript = event.results[0][0].transcript;
+        setInput(transcript);
+        setIsListening(false);
+      };
+
+      recognitionRef.current.onerror = () => {
+        setIsListening(false);
+      };
+
+      recognitionRef.current.onend = () => {
+        setIsListening(false);
+      };
+    }
+  }, []);
+
+  const handleSubmit = async (e?: React.FormEvent, suggestedQuestion?: string) => {
+    if (e) e.preventDefault();
+
+    const messageText = suggestedQuestion || input.trim();
+    if (!messageText || isLoading) return;
 
     const userMessage: Message = {
       id: Date.now().toString(),
       role: 'user',
-      content: input.trim(),
+      content: messageText,
     };
 
     setMessages((prev) => [...prev, userMessage]);
@@ -103,6 +156,46 @@ export function ChatWidget({ isOpen, onClose }: ChatWidgetProps) {
     }
   };
 
+  const copyMessage = (content: string, id: string) => {
+    navigator.clipboard.writeText(content);
+    setCopiedId(id);
+    setTimeout(() => setCopiedId(null), 2000);
+  };
+
+  const reactToMessage = (id: string, reaction: 'like' | 'dislike') => {
+    setMessages((prev) =>
+      prev.map((msg) =>
+        msg.id === id ? { ...msg, reaction: msg.reaction === reaction ? undefined : reaction } : msg
+      )
+    );
+  };
+
+  const toggleVoiceInput = () => {
+    if (!recognitionRef.current) {
+      alert('Voice input is not supported in your browser. Please use Chrome, Edge, or Safari.');
+      return;
+    }
+
+    if (isListening) {
+      recognitionRef.current.stop();
+      setIsListening(false);
+    } else {
+      recognitionRef.current.start();
+      setIsListening(true);
+    }
+  };
+
+  const clearHistory = () => {
+    localStorage.removeItem('chatHistory');
+    setMessages([
+      {
+        id: '1',
+        role: 'assistant',
+        content: "Hi! 👋 I'm Rodwin's AI assistant. Ask me about his skills, projects, education, or career goals!",
+      },
+    ]);
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -128,35 +221,79 @@ export function ChatWidget({ isOpen, onClose }: ChatWidgetProps) {
         <div className="flex-1 overflow-y-auto p-4 bg-gray-50 dark:bg-black">
           <div className="space-y-4">
             {messages.map((message) => (
-              <div
-                key={message.id}
-                className={cn(
-                  'flex gap-3',
-                  message.role === 'user' ? 'justify-end' : 'justify-start'
-                )}
-              >
-                {message.role === 'assistant' && (
-                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gray-900 dark:bg-white flex items-center justify-center">
-                    <Bot className="h-4 w-4 text-white dark:text-gray-900" />
-                  </div>
-                )}
+              <div key={message.id}>
                 <div
                   className={cn(
-                    'max-w-[80%] rounded-lg px-4 py-2.5 break-words shadow-sm',
-                    message.role === 'user'
-                      ? 'bg-gray-900 dark:bg-white text-white dark:text-gray-900'
-                      : 'bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-600'
+                    'flex gap-3',
+                    message.role === 'user' ? 'justify-end' : 'justify-start'
                   )}
                 >
-                  <p className="text-sm whitespace-pre-wrap break-words">
-                    {message.content}
-                  </p>
-                </div>
-                {message.role === 'user' && (
-                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center">
-                    <User className="h-4 w-4 text-gray-700 dark:text-gray-200" />
+                  {message.role === 'assistant' && (
+                    <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gray-900 dark:bg-white flex items-center justify-center">
+                      <Bot className="h-4 w-4 text-white dark:text-gray-900" />
+                    </div>
+                  )}
+                  <div className="flex flex-col gap-1 max-w-[80%]">
+                    <div
+                      className={cn(
+                        'rounded-lg px-4 py-2.5 break-words shadow-sm',
+                        message.role === 'user'
+                          ? 'bg-gray-900 dark:bg-white text-white dark:text-gray-900'
+                          : 'bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-600'
+                      )}
+                    >
+                      <p className="text-sm whitespace-pre-wrap break-words">
+                        {message.content}
+                      </p>
+                    </div>
+                    {message.role === 'assistant' && (
+                      <div className="flex gap-1 items-center ml-1">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-6 w-6 hover:bg-gray-200 dark:hover:bg-gray-600"
+                          onClick={() => copyMessage(message.content, message.id)}
+                          title="Copy message"
+                        >
+                          {copiedId === message.id ? (
+                            <Check className="h-3 w-3 text-green-600" />
+                          ) : (
+                            <Copy className="h-3 w-3" />
+                          )}
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className={cn(
+                            'h-6 w-6 hover:bg-gray-200 dark:hover:bg-gray-600',
+                            message.reaction === 'like' && 'text-green-600'
+                          )}
+                          onClick={() => reactToMessage(message.id, 'like')}
+                          title="Helpful"
+                        >
+                          <ThumbsUp className="h-3 w-3" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className={cn(
+                            'h-6 w-6 hover:bg-gray-200 dark:hover:bg-gray-600',
+                            message.reaction === 'dislike' && 'text-red-600'
+                          )}
+                          onClick={() => reactToMessage(message.id, 'dislike')}
+                          title="Not helpful"
+                        >
+                          <ThumbsDown className="h-3 w-3" />
+                        </Button>
+                      </div>
+                    )}
                   </div>
-                )}
+                  {message.role === 'user' && (
+                    <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center">
+                      <User className="h-4 w-4 text-gray-700 dark:text-gray-200" />
+                    </div>
+                  )}
+                </div>
               </div>
             ))}
             {isLoading && (
@@ -164,14 +301,36 @@ export function ChatWidget({ isOpen, onClose }: ChatWidgetProps) {
                 <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gray-900 dark:bg-white flex items-center justify-center">
                   <Bot className="h-4 w-4 text-white dark:text-gray-900" />
                 </div>
-                <div className="bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg px-4 py-2">
-                  <Loader2 className="h-4 w-4 animate-spin text-gray-900 dark:text-white" />
+                <div className="bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg px-4 py-3">
+                  <div className="flex items-center gap-2">
+                    <Loader2 className="h-4 w-4 animate-spin text-gray-900 dark:text-white" />
+                    <span className="text-xs text-gray-600 dark:text-gray-300">Rodwin's AI is thinking...</span>
+                  </div>
                 </div>
               </div>
             )}
           </div>
           <div ref={messagesEndRef} />
         </div>
+
+        {/* Suggested Questions */}
+        {messages.length <= 2 && (
+          <div className="px-4 pb-2 bg-gray-50 dark:bg-black">
+            <p className="text-xs text-gray-600 dark:text-gray-400 mb-2">Quick questions:</p>
+            <div className="flex flex-wrap gap-2">
+              {SUGGESTED_QUESTIONS.map((question) => (
+                <button
+                  key={question}
+                  onClick={() => handleSubmit(undefined, question)}
+                  disabled={isLoading}
+                  className="text-xs px-3 py-1.5 rounded-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {question}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Input */}
         <form onSubmit={handleSubmit} className="p-4 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-black">
@@ -180,10 +339,27 @@ export function ChatWidget({ isOpen, onClose }: ChatWidgetProps) {
               ref={inputRef}
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="Ask about skills, projects, goals..."
+              placeholder={isListening ? "Listening..." : "Ask about skills, projects, goals..."}
               disabled={isLoading}
               className="flex-1 bg-gray-50 dark:bg-gray-900 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 placeholder:text-gray-500 dark:placeholder:text-gray-400"
             />
+            <Button
+              type="button"
+              size="icon"
+              onClick={toggleVoiceInput}
+              disabled={isLoading}
+              className={cn(
+                "bg-gray-900 dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-100 text-white dark:text-gray-900",
+                isListening && "bg-red-600 dark:bg-red-600 hover:bg-red-700 dark:hover:bg-red-700 animate-pulse"
+              )}
+              title="Voice input"
+            >
+              {isListening ? (
+                <MicOff className="h-4 w-4" />
+              ) : (
+                <Mic className="h-4 w-4" />
+              )}
+            </Button>
             <Button 
               type="submit" 
               size="icon" 
@@ -197,6 +373,9 @@ export function ChatWidget({ isOpen, onClose }: ChatWidgetProps) {
               )}
             </Button>
           </div>
+          <p className="text-[10px] text-gray-500 dark:text-gray-400 mt-2 text-center">
+            Chat history saved locally • <button type="button" onClick={clearHistory} className="underline hover:text-gray-700 dark:hover:text-gray-300">Clear history</button>
+          </p>
         </form>
       </div>
     </div>
