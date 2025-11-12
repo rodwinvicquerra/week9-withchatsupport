@@ -107,9 +107,9 @@ export function ChatWidget({ isOpen, onClose }: ChatWidgetProps) {
 
   return (
     <div className="fixed bottom-[140px] right-6 z-50 w-[420px] max-w-[calc(100vw-2rem)]">
-      <div className="flex flex-col h-[550px] max-h-[75vh] bg-white dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-xl shadow-2xl">
+      <div className="flex flex-col h-[550px] max-h-[75vh] bg-white dark:bg-black border-2 border-gray-200 dark:border-gray-700 rounded-xl shadow-2xl">
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white rounded-t-xl">
+        <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-black text-gray-900 dark:text-white rounded-t-xl">
           <div className="flex items-center gap-2">
             <Bot className="h-5 w-5" />
             <h3 className="font-semibold">Portfolio Assistant</h3>
@@ -125,7 +125,7 @@ export function ChatWidget({ isOpen, onClose }: ChatWidgetProps) {
         </div>
 
         {/* Messages */}
-        <div className="flex-1 overflow-y-auto p-4 bg-gray-50 dark:bg-gray-800">
+        <div className="flex-1 overflow-y-auto p-4 bg-gray-50 dark:bg-black">
           <div className="space-y-4">
             {messages.map((message) => (
               <div
@@ -174,7 +174,7 @@ export function ChatWidget({ isOpen, onClose }: ChatWidgetProps) {
         </div>
 
         {/* Input */}
-        <form onSubmit={handleSubmit} className="p-4 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
+        <form onSubmit={handleSubmit} className="p-4 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-black">
           <div className="flex gap-2">
             <Input
               ref={inputRef}
@@ -182,7 +182,7 @@ export function ChatWidget({ isOpen, onClose }: ChatWidgetProps) {
               onChange={(e) => setInput(e.target.value)}
               placeholder="Ask about skills, projects, goals..."
               disabled={isLoading}
-              className="flex-1 bg-gray-50 dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 placeholder:text-gray-500 dark:placeholder:text-gray-400"
+              className="flex-1 bg-gray-50 dark:bg-gray-900 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 placeholder:text-gray-500 dark:placeholder:text-gray-400"
             />
             <Button 
               type="submit" 
