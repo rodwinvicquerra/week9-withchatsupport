@@ -150,48 +150,14 @@ export function ChatWidget({ isOpen, onClose }: ChatWidgetProps) {
     );
   };
 
-  const initRecognition = () => {
-    if (!recognitionRef.current) {
-      const SpeechRecognition = (window as any).webkitSpeechRecognition || (window as any).SpeechRecognition;
-      recognitionRef.current = new SpeechRecognition();
-      recognitionRef.current.continuous = false;
-      recognitionRef.current.interimResults = false;
-      recognitionRef.current.lang = 'en-US';
-      recognitionRef.current.maxAlternatives = 1;
-
-      recognitionRef.current.onstart = () => {
-        console.log('🎤 Listening...');
-      };
-
-      recognitionRef.current.onresult = (event: any) => {
-        const transcript = event.results[0][0].transcript;
-        console.log('✅ Heard:', transcript);
-        setInput(transcript);
-      };
-
-      recognitionRef.current.onerror = (event: any) => {
-        console.error('❌ Error:', event.error);
-        if (event.error === 'not-allowed') {
-          alert('Microphone blocked!\n\nTo enable:\n1. Click 🔒 in address bar\n2. Set Microphone to "Allow"\n3. Reload page');
-        }
-      };
-
-      recognitionRef.current.onend = () => {
-        console.log('🛑 Stopped');
-        setIsListening(false);
-        if (timeoutRef.current) {
-          clearTimeout(timeoutRef.current);
-        }
-      };
-    }
-  };
-
   const toggleVoiceInput = () => {
+    // Check browser support
     if (typeof window === 'undefined' || (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window))) {
-      alert('Voice not supported in this browser');
+      console.log('Speech recognition not supported');
       return;
     }
 
+    // Stop if already listening
     if (isListening) {
       if (recognitionRef.current) {
         recognitionRef.current.stop();
@@ -203,19 +169,52 @@ export function ChatWidget({ isOpen, onClose }: ChatWidgetProps) {
       return;
     }
 
-    initRecognition();
-    
+    // Create recognition object
+    const SpeechRecognition = (window as any).webkitSpeechRecognition || (window as any).SpeechRecognition;
+    recognitionRef.current = new SpeechRecognition();
+    recognitionRef.current.continuous = false;
+    recognitionRef.current.interimResults = false;
+    recognitionRef.current.lang = 'en-US';
+
+    recognitionRef.current.onstart = () => {
+      setIsListening(true);
+      console.log('Voice: Started');
+    };
+
+    recognitionRef.current.onresult = (event: any) => {
+      const transcript = event.results[0][0].transcript;
+      setInput(transcript);
+      console.log('Voice: ' + transcript);
+    };
+
+    recognitionRef.current.onerror = (event: any) => {
+      console.log('Voice error:', event.error);
+      setIsListening(false);
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+
+    recognitionRef.current.onend = () => {
+      setIsListening(false);
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+      console.log('Voice: Stopped');
+    };
+
+    // Start recognition
     try {
       recognitionRef.current.start();
-      setIsListening(true);
       
+      // Auto-stop after 5 seconds
       timeoutRef.current = setTimeout(() => {
         if (recognitionRef.current) {
           recognitionRef.current.stop();
         }
       }, 5000);
     } catch (error) {
-      console.error('Start failed:', error);
+      console.log('Voice: Failed to start');
       setIsListening(false);
     }
   };
