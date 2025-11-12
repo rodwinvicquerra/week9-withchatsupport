@@ -60,7 +60,7 @@ export function Navigation() {
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <button onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} className="text-xl font-bold text-primary hover:text-accent transition-colors tracking-tight">
-              RODWIN VICQUERRA
+              Rodwin's Portfolio
             </button>
             <div className="hidden md:flex items-center gap-1">
               {visibleNavItems.map((item) =>
