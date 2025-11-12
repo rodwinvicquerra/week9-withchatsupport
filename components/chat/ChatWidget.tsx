@@ -79,6 +79,7 @@ export function ChatWidget({ isOpen, onClose }: ChatWidgetProps) {
       recognitionRef.current = new SpeechRecognition();
       recognitionRef.current.continuous = false;
       recognitionRef.current.interimResults = false;
+      recognitionRef.current.lang = 'en-US'; // Set language for better Edge compatibility
 
       recognitionRef.current.onresult = (event: any) => {
         const transcript = event.results[0][0].transcript;
@@ -86,7 +87,8 @@ export function ChatWidget({ isOpen, onClose }: ChatWidgetProps) {
         setIsListening(false);
       };
 
-      recognitionRef.current.onerror = () => {
+      recognitionRef.current.onerror = (event: any) => {
+        console.error('Speech recognition error:', event.error);
         setIsListening(false);
       };
 
@@ -180,8 +182,22 @@ export function ChatWidget({ isOpen, onClose }: ChatWidgetProps) {
       recognitionRef.current.stop();
       setIsListening(false);
     } else {
-      recognitionRef.current.start();
-      setIsListening(true);
+      try {
+        recognitionRef.current.start();
+        setIsListening(true);
+        
+        // Auto-stop after 5 seconds
+        setTimeout(() => {
+          if (recognitionRef.current && isListening) {
+            recognitionRef.current.stop();
+            setIsListening(false);
+          }
+        }, 5000);
+      } catch (error) {
+        console.error('Failed to start voice recognition:', error);
+        setIsListening(false);
+        alert('Could not start voice input. Please check microphone permissions.');
+      }
     }
   };
 
