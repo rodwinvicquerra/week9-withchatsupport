@@ -11,11 +11,13 @@ import { ChatButton } from "@/components/chat/ChatButton"
 import { Suspense } from "react"
 
 export const metadata: Metadata = {
-  title: "Rodwin Vicquerra - Web Developer Portfolio",
+  title: "Rodwin's Portfolio",
   description: "Portfolio of Rodwin Vicquerra - 3rd Year IT Student majoring in Web Development",
   generator: "v0.app",
   icons: {
     icon: "/iconwebsite.png",
+    shortcut: "/iconwebsite.png",
+    apple: "/iconwebsite.png",
   },
 }
 

@@ -1,9 +1,10 @@
 "use client"
 
+import { useState } from "react"
 import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { ExternalLink, Github, Star, Folder, TrendingUp, BookOpen } from "lucide-react"
+import { ExternalLink, Github, Star, Folder, TrendingUp, BookOpen, ChevronLeft, ChevronRight } from "lucide-react"
 
 const projects = [
   {
@@ -105,6 +106,27 @@ const projects = [
 ]
 
 export function ProjectsSection() {
+  const [currentIndex, setCurrentIndex] = useState(0)
+  const itemsPerPage = 2
+  const totalPages = Math.ceil(projects.length / itemsPerPage)
+
+  const nextSlide = () => {
+    if (currentIndex < totalPages - 1) {
+      setCurrentIndex(currentIndex + 1)
+    }
+  }
+
+  const prevSlide = () => {
+    if (currentIndex > 0) {
+      setCurrentIndex(currentIndex - 1)
+    }
+  }
+
+  const visibleProjects = projects.slice(
+    currentIndex * itemsPerPage,
+    (currentIndex + 1) * itemsPerPage
+  )
+
   return (
     <section id="projects" className="py-24 px-4 sm:px-6 lg:px-8 bg-muted/30 relative overflow-hidden">
       {/* Background decoration */}
@@ -123,12 +145,51 @@ export function ProjectsSection() {
           </p>
         </div>
         
-        <div className="grid gap-8 md:grid-cols-2">
-          {projects.map((project, idx) => (
-            <Card
-              key={idx}
-              className="group relative overflow-hidden hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border-2 hover:border-primary/50 bg-card"
+        {/* Carousel Container */}
+        <div className="relative">
+          {/* Left Arrow */}
+          <button
+            onClick={prevSlide}
+            disabled={currentIndex === 0}
+            className={`absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-20 w-12 h-12 rounded-full bg-background border-2 border-border shadow-lg flex items-center justify-center transition-all duration-300 ${
+              currentIndex === 0
+                ? 'opacity-30 cursor-not-allowed'
+                : 'hover:border-primary hover:bg-primary/5 hover:scale-110'
+            }`}
+            aria-label="Previous projects"
+          >
+            <ChevronLeft className="h-6 w-6" />
+          </button>
+
+          {/* Right Arrow */}
+          <button
+            onClick={nextSlide}
+            disabled={currentIndex >= totalPages - 1}
+            className={`absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-20 w-12 h-12 rounded-full bg-background border-2 border-border shadow-lg flex items-center justify-center transition-all duration-300 ${
+              currentIndex >= totalPages - 1
+                ? 'opacity-30 cursor-not-allowed'
+                : 'hover:border-primary hover:bg-primary/5 hover:scale-110'
+            }`}
+            aria-label="Next projects"
+          >
+            <ChevronRight className="h-6 w-6" />
+          </button>
+
+          {/* Projects Grid with Animation */}
+          <div className="overflow-hidden">
+            <div 
+              className="grid gap-8 md:grid-cols-2 transition-all duration-700 ease-in-out"
+              style={{
+                transform: `translateX(0)`,
+                opacity: 1
+              }}
             >
+              {visibleProjects.map((project, idx) => (
+              {visibleProjects.map((project, idx) => (
+                <Card
+                  key={currentIndex * itemsPerPage + idx}
+                  className="group relative overflow-hidden hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border-2 hover:border-primary/50 bg-card"
+                >
               {/* Gradient overlay on hover */}
               <div className={`absolute inset-0 bg-gradient-to-br ${project.color} opacity-0 group-hover:opacity-10 transition-opacity duration-500`} />
               
@@ -239,7 +300,25 @@ export function ProjectsSection() {
               {/* Corner decoration */}
               <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-primary/5 to-transparent rounded-bl-full" />
             </Card>
-          ))}
+              ))}
+            </div>
+          </div>
+
+          {/* Pagination Dots */}
+          <div className="flex justify-center gap-2 mt-8">
+            {Array.from({ length: totalPages }).map((_, index) => (
+              <button
+                key={index}
+                onClick={() => setCurrentIndex(index)}
+                className={`h-2 rounded-full transition-all duration-300 ${
+                  index === currentIndex
+                    ? 'w-8 bg-primary'
+                    : 'w-2 bg-border hover:bg-primary/50'
+                }`}
+                aria-label={`Go to page ${index + 1}`}
+              />
+            ))}
+          </div>
         </div>
 
         {/* CTA */}
