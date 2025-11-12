@@ -106,7 +106,7 @@ export function ChatWidget({ isOpen, onClose }: ChatWidgetProps) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed bottom-20 right-4 z-50 w-96 max-w-[calc(100vw-2rem)]">
+    <div className="fixed bottom-28 right-6 z-50 w-96 max-w-[calc(100vw-2rem)]">
       <div className="flex flex-col h-[600px] max-h-[80vh] bg-background border rounded-lg shadow-2xl">
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b bg-primary text-primary-foreground rounded-t-lg">
