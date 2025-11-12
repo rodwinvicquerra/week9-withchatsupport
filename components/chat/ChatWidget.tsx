@@ -149,38 +149,11 @@ export function ChatWidget({ isOpen, onClose }: ChatWidgetProps) {
     );
   };
 
-  const toggleVoiceInput = () => {
+  const toggleVoiceInput = async () => {
     // Check if Speech Recognition is available
     if (typeof window === 'undefined' || (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window))) {
       alert('Voice input is not supported in your browser. Please use Chrome, Edge, or Safari.');
       return;
-    }
-
-    // Initialize recognition if not already done
-    if (!recognitionRef.current) {
-      const SpeechRecognition = (window as any).webkitSpeechRecognition || (window as any).SpeechRecognition;
-      recognitionRef.current = new SpeechRecognition();
-      recognitionRef.current.continuous = false;
-      recognitionRef.current.interimResults = false;
-      recognitionRef.current.lang = 'en-US';
-
-      recognitionRef.current.onresult = (event: any) => {
-        const transcript = event.results[0][0].transcript;
-        setInput(transcript);
-        setIsListening(false);
-      };
-
-      recognitionRef.current.onerror = (event: any) => {
-        console.error('Speech recognition error:', event.error);
-        setIsListening(false);
-        if (event.error === 'not-allowed') {
-          alert('Microphone access denied. Please allow microphone permissions in your browser settings.');
-        }
-      };
-
-      recognitionRef.current.onend = () => {
-        setIsListening(false);
-      };
     }
 
     if (isListening) {
@@ -190,40 +163,95 @@ export function ChatWidget({ isOpen, onClose }: ChatWidgetProps) {
         timeoutRef.current = null;
       }
       try {
-        recognitionRef.current.stop();
+        if (recognitionRef.current) {
+          recognitionRef.current.stop();
+        }
       } catch (e) {
         console.log('Recognition already stopped');
       }
       setIsListening(false);
-    } else {
-      try {
-        recognitionRef.current.start();
-        setIsListening(true);
-        console.log('Voice recognition started - speak now!');
-        
-        // Auto-stop after 5 seconds
-        timeoutRef.current = setTimeout(() => {
-          if (recognitionRef.current) {
-            try {
-              recognitionRef.current.stop();
-              console.log('Voice recognition auto-stopped after 5 seconds');
-            } catch (e) {
-              console.log('Recognition already stopped');
-            }
-            setIsListening(false);
-          }
-        }, 5000);
-      } catch (error: any) {
-        console.error('Failed to start voice recognition:', error);
-        setIsListening(false);
-        
-        // Specific error messages
-        if (error.message && error.message.includes('already started')) {
-          alert('Voice input is already active. Please wait a moment and try again.');
-        } else {
-          alert('Could not start voice input. Please check microphone permissions in your browser settings.');
-        }
+      return;
+    }
+
+    // Request microphone permission explicitly
+    try {
+      await navigator.mediaDevices.getUserMedia({ audio: true });
+      console.log('Microphone permission granted');
+    } catch (err) {
+      console.error('Microphone permission error:', err);
+      alert('Please allow microphone access:\n1. Click the 🔒 or ⓘ icon in your browser address bar\n2. Find "Microphone" and set it to "Allow"\n3. Refresh the page and try again');
+      return;
+    }
+
+    // Initialize recognition if not already done or recreate it
+    const SpeechRecognition = (window as any).webkitSpeechRecognition || (window as any).SpeechRecognition;
+    recognitionRef.current = new SpeechRecognition();
+    recognitionRef.current.continuous = false;
+    recognitionRef.current.interimResults = false;
+    recognitionRef.current.lang = 'en-US';
+    recognitionRef.current.maxAlternatives = 1;
+
+    recognitionRef.current.onstart = () => {
+      console.log('Speech recognition started successfully');
+      setIsListening(true);
+    };
+
+    recognitionRef.current.onresult = (event: any) => {
+      const transcript = event.results[0][0].transcript;
+      console.log('Recognized text:', transcript);
+      setInput(transcript);
+      setIsListening(false);
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+        timeoutRef.current = null;
       }
+    };
+
+    recognitionRef.current.onerror = (event: any) => {
+      console.error('Speech recognition error:', event.error);
+      setIsListening(false);
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+        timeoutRef.current = null;
+      }
+      
+      if (event.error === 'not-allowed' || event.error === 'permission-denied') {
+        alert('Microphone blocked! To fix:\n\n1. Click the 🔒 lock icon in your address bar\n2. Find "Microphone" setting\n3. Change to "Allow"\n4. Refresh the page');
+      } else if (event.error === 'no-speech') {
+        alert('No speech detected. Please try again and speak clearly.');
+      } else {
+        alert('Error: ' + event.error + '\n\nPlease try again.');
+      }
+    };
+
+    recognitionRef.current.onend = () => {
+      console.log('Speech recognition ended');
+      setIsListening(false);
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+        timeoutRef.current = null;
+      }
+    };
+
+    try {
+      recognitionRef.current.start();
+      console.log('Starting voice recognition...');
+      
+      // Auto-stop after 5 seconds
+      timeoutRef.current = setTimeout(() => {
+        if (recognitionRef.current) {
+          try {
+            recognitionRef.current.stop();
+            console.log('Voice recognition auto-stopped after 5 seconds');
+          } catch (e) {
+            console.log('Recognition already stopped');
+          }
+        }
+      }, 5000);
+    } catch (error: any) {
+      console.error('Failed to start voice recognition:', error);
+      setIsListening(false);
+      alert('Failed to start voice input. Please refresh the page and try again.');
     }
   };
 
