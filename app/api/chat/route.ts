@@ -53,14 +53,16 @@ export async function POST(req: Request) {
       ...messages,
     ];
 
-    // Check if we're using Groq (production) or Ollama (local)
+    // Check if we're on Vercel (production) or localhost
     const groqApiKey = process.env.GROQ_API_KEY;
-    const isProduction = !!groqApiKey;
+    const isVercel = process.env.VERCEL === '1';
+    const useGroq = isVercel && groqApiKey;
 
     let response;
 
-    if (isProduction) {
-      // Use Groq for production (Vercel deployment)
+    if (useGroq) {
+      // Use Groq for Vercel deployment
+      console.log('Using Groq API on Vercel');
       response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
         method: 'POST',
         headers: {
@@ -99,6 +101,7 @@ export async function POST(req: Request) {
       });
     } else {
       // Use Ollama for local development
+      console.log('Using Ollama for localhost');
       response = await fetch('http://localhost:11434/api/chat', {
         method: 'POST',
         headers: {
