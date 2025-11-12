@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { portfolioContext } from '@/lib/portfolio-context';
-import Groq from 'groq-sdk';
+import OpenAI from 'openai';
 
 // Simple rate limiting (in-memory for demo - use Redis for production)
 const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
@@ -55,36 +55,33 @@ export async function POST(req: Request) {
     ];
 
     // Check if we're on Vercel (production) or localhost
-    const groqApiKey = process.env.GROQ_API_KEY;
+    const apiKey = process.env.OPENAI_API_KEY || process.env.GROQ_API_KEY;
     const isVercel = process.env.VERCEL === '1';
-    const useGroq = isVercel && groqApiKey;
+    const useOpenAI = isVercel && apiKey;
 
-    let response;
-
-    if (useGroq) {
-      // Use Groq for Vercel deployment
-      console.log('Using Groq API on Vercel, API Key exists:', !!groqApiKey);
+    if (useOpenAI) {
+      // Use OpenAI for Vercel deployment (more reliable)
+      console.log('Using OpenAI on Vercel');
       
       try {
-        const groq = new Groq({
-          apiKey: groqApiKey,
-          timeout: 30000, // 30 second timeout
+        const openai = new OpenAI({
+          apiKey: apiKey,
         });
 
-        console.log('Groq client created, calling API...');
+        console.log('OpenAI client created, calling API...');
         
-        const completion = await groq.chat.completions.create({
-          model: 'llama3-8b-8192', // Smaller, faster model
+        const completion = await openai.chat.completions.create({
+          model: 'gpt-3.5-turbo',
           messages: chatMessages as any,
           temperature: 0.7,
           max_tokens: 300,
         });
 
-        console.log('Groq API response received');
+        console.log('OpenAI API response received');
         const assistantMessage = completion.choices[0]?.message?.content;
 
         if (!assistantMessage) {
-          console.error('No message in Groq response:', completion);
+          console.error('No message in response:', completion);
           return NextResponse.json(
             { error: 'No response from AI' },
             { status: 500 }
@@ -94,10 +91,10 @@ export async function POST(req: Request) {
         return NextResponse.json({
           message: assistantMessage,
         });
-      } catch (error) {
-        console.error('Groq SDK error:', error);
+      } catch (error: any) {
+        console.error('OpenAI error:', error);
         return NextResponse.json(
-          { error: `Failed to connect to Groq: ${error instanceof Error ? error.message : 'Unknown error'}` },
+          { error: `AI Error: ${error?.message || 'Unknown error'}` },
           { status: 500 }
         );
       }
