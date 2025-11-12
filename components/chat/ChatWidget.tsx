@@ -106,10 +106,10 @@ export function ChatWidget({ isOpen, onClose }: ChatWidgetProps) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed bottom-28 right-6 z-50 w-96 max-w-[calc(100vw-2rem)]">
-      <div className="flex flex-col h-[600px] max-h-[80vh] bg-background border rounded-lg shadow-2xl">
+    <div className="fixed bottom-[140px] right-6 z-50 w-[420px] max-w-[calc(100vw-2rem)]">
+      <div className="flex flex-col h-[550px] max-h-[75vh] bg-white dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-xl shadow-2xl">
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b bg-primary text-primary-foreground rounded-t-lg">
+        <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-blue-600 to-blue-700 dark:from-blue-500 dark:to-blue-600 text-white rounded-t-xl">
           <div className="flex items-center gap-2">
             <Bot className="h-5 w-5" />
             <h3 className="font-semibold">Portfolio Assistant</h3>
@@ -118,14 +118,14 @@ export function ChatWidget({ isOpen, onClose }: ChatWidgetProps) {
             variant="ghost"
             size="icon"
             onClick={onClose}
-            className="text-primary-foreground hover:bg-primary-foreground/20"
+            className="text-white hover:bg-white/20"
           >
             <X className="h-5 w-5" />
           </Button>
         </div>
 
         {/* Messages */}
-        <div className="flex-1 overflow-y-auto p-4">
+        <div className="flex-1 overflow-y-auto p-4 bg-gray-50 dark:bg-gray-800">
           <div className="space-y-4">
             {messages.map((message) => (
               <div
@@ -136,16 +136,16 @@ export function ChatWidget({ isOpen, onClose }: ChatWidgetProps) {
                 )}
               >
                 {message.role === 'assistant' && (
-                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary flex items-center justify-center">
-                    <Bot className="h-4 w-4 text-primary-foreground" />
+                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-blue-600 to-blue-700 dark:from-blue-500 dark:to-blue-600 flex items-center justify-center">
+                    <Bot className="h-4 w-4 text-white" />
                   </div>
                 )}
                 <div
                   className={cn(
-                    'max-w-[80%] rounded-lg px-4 py-2 break-words',
+                    'max-w-[80%] rounded-lg px-4 py-2.5 break-words shadow-sm',
                     message.role === 'user'
-                      ? 'bg-primary text-primary-foreground'
-                      : 'bg-muted'
+                      ? 'bg-gradient-to-br from-blue-600 to-blue-700 dark:from-blue-500 dark:to-blue-600 text-white'
+                      : 'bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-600'
                   )}
                 >
                   <p className="text-sm whitespace-pre-wrap break-words">
@@ -153,19 +153,19 @@ export function ChatWidget({ isOpen, onClose }: ChatWidgetProps) {
                   </p>
                 </div>
                 {message.role === 'user' && (
-                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-muted flex items-center justify-center">
-                    <User className="h-4 w-4" />
+                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center">
+                    <User className="h-4 w-4 text-gray-700 dark:text-gray-200" />
                   </div>
                 )}
               </div>
             ))}
             {isLoading && (
               <div className="flex gap-3 justify-start">
-                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary flex items-center justify-center">
-                  <Bot className="h-4 w-4 text-primary-foreground" />
+                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-blue-600 to-blue-700 dark:from-blue-500 dark:to-blue-600 flex items-center justify-center">
+                  <Bot className="h-4 w-4 text-white" />
                 </div>
-                <div className="bg-muted rounded-lg px-4 py-2">
-                  <Loader2 className="h-4 w-4 animate-spin" />
+                <div className="bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg px-4 py-2">
+                  <Loader2 className="h-4 w-4 animate-spin text-blue-600 dark:text-blue-400" />
                 </div>
               </div>
             )}
@@ -174,7 +174,7 @@ export function ChatWidget({ isOpen, onClose }: ChatWidgetProps) {
         </div>
 
         {/* Input */}
-        <form onSubmit={handleSubmit} className="p-4 border-t">
+        <form onSubmit={handleSubmit} className="p-4 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
           <div className="flex gap-2">
             <Input
               ref={inputRef}
@@ -182,9 +182,14 @@ export function ChatWidget({ isOpen, onClose }: ChatWidgetProps) {
               onChange={(e) => setInput(e.target.value)}
               placeholder="Ask about skills, projects, goals..."
               disabled={isLoading}
-              className="flex-1"
+              className="flex-1 bg-gray-50 dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 placeholder:text-gray-500 dark:placeholder:text-gray-400"
             />
-            <Button type="submit" size="icon" disabled={isLoading || !input.trim()}>
+            <Button 
+              type="submit" 
+              size="icon" 
+              disabled={isLoading || !input.trim()}
+              className="bg-gradient-to-br from-blue-600 to-blue-700 dark:from-blue-500 dark:to-blue-600 hover:from-blue-700 hover:to-blue-800 dark:hover:from-blue-600 dark:hover:to-blue-700 text-white"
+            >
               {isLoading ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
               ) : (
