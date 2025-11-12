@@ -14,6 +14,9 @@ export const metadata: Metadata = {
   title: "Rodwin Vicquerra - Web Developer Portfolio",
   description: "Portfolio of Rodwin Vicquerra - 3rd Year IT Student majoring in Web Development",
   generator: "v0.app",
+  icons: {
+    icon: "/iconwebsite.png",
+  },
 }
 
 // Force dynamic rendering for Clerk
