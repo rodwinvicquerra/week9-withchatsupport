@@ -12,10 +12,10 @@ export function ChatButton() {
     <>
       {/* Pulse animation wrapper */}
       <div className="fixed bottom-32 right-6 z-50">
-        <div className="absolute inset-0 bg-gray-400/20 dark:bg-gray-600/20 rounded-2xl animate-pulse" />
+        <div className="absolute inset-0 bg-gray-400/20 dark:bg-gray-300/20 rounded-2xl animate-pulse" />
         <Button
           onClick={() => setIsOpen(!isOpen)}
-          className="relative h-[90px] w-[90px] rounded-2xl shadow-xl bg-white dark:bg-gray-900 hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-900 dark:text-white hover:scale-105 transition-all duration-300 flex flex-col items-center justify-center gap-1.5 p-2 border-2 border-gray-200 dark:border-gray-700"
+          className="relative h-[90px] w-[90px] rounded-2xl shadow-xl bg-gray-900 dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-50 text-white dark:text-gray-900 hover:scale-105 transition-all duration-300 flex flex-col items-center justify-center gap-1.5 p-2 border-2 border-gray-700 dark:border-gray-200"
           aria-label="Open chat support"
           title="Ask about my skills, projects & experience"
         >
